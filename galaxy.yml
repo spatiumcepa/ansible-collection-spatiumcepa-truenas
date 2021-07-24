@@ -1,0 +1,14 @@
+---
+namespace: "spatiumcepa"
+name: "truenas"
+version: "0.0.1"
+description: Spatium Cepa TrueNAS Management Ansible Collection
+readme: "README.md"
+authors:
+  - "Nicholas Kiraly <kiraly.nicholas@gmail.com>"
+dependencies: []
+license:
+  - "BSD-2-Clause"
+tags:
+  - platform
+repository: "https://github.com/spatium-cepa/ansible-collection-spatiumcepa-truenas"

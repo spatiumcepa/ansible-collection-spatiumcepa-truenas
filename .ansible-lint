@@ -1,0 +1,2 @@
+skip_list:
+  - '204'  # Don't check for lines longer than 160 chars

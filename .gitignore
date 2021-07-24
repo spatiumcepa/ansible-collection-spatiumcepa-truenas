@@ -1,0 +1,41 @@
+# Build / Runtime artifacts
+*.pyc
+*.log
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+build/
+dist/
+doc/build/
+logs/*
+
+# Editor / Project files
+*.orig
+*.sw*
+.idea/
+.vscode/
+.DS_Store
+*~
+
+# Packages / Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Ansible
+*.retry
+.cache
+.molecule
+pytestdebug.log
+
+# Testing
+collections/

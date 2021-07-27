@@ -1,0 +1,10 @@
+---
+- name: Get System State Facts
+  truenas_api_system_state_facts:
+  register: truenas_result_system_state_facts
+
+- name: Fail if System State is not READY
+  # possible values are BOOTING, READY, SHUTTING_DOWN
+  fail:
+    msg: "TrueNAS System State is {{ truenas_result_system_state_facts.ansible_facts.system_state }}"
+  when: truenas_result_system_state_facts.ansible_facts.system_state != "READY"

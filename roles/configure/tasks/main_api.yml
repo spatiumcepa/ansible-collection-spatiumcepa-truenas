@@ -1,0 +1,11 @@
+---
+- name: Check System State Before Managing Target
+  include_tasks:
+    file: check_system_state.yml
+    apply:
+      tags:
+        - always
+        - truenas_check_system_state
+  tags:
+    - always
+    - truenas_check_system_state

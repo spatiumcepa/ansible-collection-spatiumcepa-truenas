@@ -5,7 +5,7 @@ version: "0.0.1"
 description: Spatium Cepa TrueNAS Management Ansible Collection
 readme: "README.md"
 authors:
-  - "Nicholas Kiraly <kiraly.nicholas@gmail.com>"
+  - Nicholas Kiraly (@nkiraly)
 dependencies: []
 license:
   - "BSD-2-Clause"

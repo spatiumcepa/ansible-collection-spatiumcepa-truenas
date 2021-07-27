@@ -20,15 +20,13 @@ class HTTPResponse:
 
 
 class TruenasModelError(Exception):
-    def __init__(self, response, code):
-        super(TruenasServerError, self).__init__(response)
-        self.response = response
-        self.code = code
+    """Raise when specified TrueNAS model is erroneous"""
+    pass
 
 
 class TruenasServerError(Exception):
     def __init__(self, response, code):
-        super(TruenasServerError, self).__init__(response)
+        super().__init__(response)
         self.response = response
         self.code = code
 

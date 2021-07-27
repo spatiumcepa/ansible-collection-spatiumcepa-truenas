@@ -1,4 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
+from future.utils import raise_from
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPResponse
 from ansible.plugins.loader import connection_loader
 from ansible.plugins.connection import ConnectionBase, ensure_connect
@@ -108,7 +109,7 @@ class Connection(ConnectionBase):
     transport = "pms"
 
     def __init__(self, play_context, *args, **kwargs):
-        super(Connection, self).__init__(play_context, *args, **kwargs)
+        super().__init__(play_context, *args, **kwargs)
         self._messages = []
         self._sub_plugin = {}
         self._conn_closed = False
@@ -136,9 +137,9 @@ class Connection(ConnectionBase):
         )
 
         if self._token:
-            self._headers["Authorization"] = "Bearer {}".format(self._token)
+            self._headers["Authorization"] = "Bearer %s" % (self._token)
         elif self._username:
-            self._headers["Authorization"] = "Basic {}".format(
+            self._headers["Authorization"] = "Basic %s" % (
                 b64encode(
                     bytes("%s:%s" % (self._username, self._password), "utf-8")
                 ).decode("ascii")
@@ -193,9 +194,7 @@ class Connection(ConnectionBase):
             response_headers = {}
             response_data = dict(msg=str(e.reason))
         except (ConnectionError, URLError) as e:
-            raise AnsibleConnectionFailure(
-                "Could not connect to {0}: {1}".format(url, e.reason)
-            )
+            raise_from(AnsibleConnectionFailure("Could not connect to {0}: {1}".format(url, e.reason)), e)
 
         response = {
             HTTPResponse.STATUS_CODE: response_status,

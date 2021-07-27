@@ -70,8 +70,9 @@ def main():
     except TruenasServerError as e:
         module.fail_json(msg='Server returned an error, satus code: %s. '
                              'Server response: %s' % (e.code, e.response))
+
     except TruenasModelError as e:
-        module.fail_json(msg='Data model error: %s' % (e.code, e.response))
+        module.fail_json(msg='Data model error: %s' % (e.args[0]))
 
     except TruenasUnexpectedResponse as e:
         module.fail_json(msg=e.args[0])

@@ -37,7 +37,7 @@ class TruenasResource(object):
         if self._check_mode:
             return self._mocked_response()
 
-        return self._send_request(url_path, http_method, body_params, path_params, query_params)
+        return self._send_request(http_method, url_path, body_params, path_params, query_params)
 
     def _mocked_response(self):
         if self._existing_model is None:
@@ -90,7 +90,7 @@ class TruenasMail(TruenasResource):
     RESOURCE_API_MODEL = 'mail_update'
 
     def __init__(self, conn, check_mode=False):
-        super(TruenasMail, self).__init__(
+        super().__init__(
             conn,
             self.RESOURCE_PATH,
             self.RESOURCE_API_MODEL,
@@ -104,7 +104,7 @@ class TruenasSystemState(TruenasResource):
     RESOURCE_API_MODEL = 'json_string'
 
     def __init__(self, conn, check_mode=False):
-        super(TruenasSystemState, self).__init__(
+        super().__init__(
             conn,
             self.RESOURCE_PATH,
             self.RESOURCE_API_MODEL,

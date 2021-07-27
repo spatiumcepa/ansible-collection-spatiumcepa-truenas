@@ -4,7 +4,8 @@ __metaclass__ = type
 import copy
 from functools import partial
 
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPMethod, HTTPResponse, TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPMethod, HTTPResponse, \
+    TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
 
 
 CHECKED_REQUEST_SUCCESS_CODE = 200
@@ -53,7 +54,7 @@ class TruenasResource(object):
         for new_key in new_keys:
             if new_key not in existing_model:
                 raise TruenasModelError("Unknown model property %s" % (new_key))
-            elif existing_model[new_key] == {} and new_model[new_key] == None:
+            elif existing_model[new_key] == {} and new_model[new_key] is None:
                 # consider existing empty dict and arg spec defaulted dict None equal
                 pass
             elif existing_model[new_key] != new_model[new_key]:

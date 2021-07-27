@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
+    TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasMail
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import mail_update_arg_spec
 from ansible.module_utils.connection import Connection, ConnectionError

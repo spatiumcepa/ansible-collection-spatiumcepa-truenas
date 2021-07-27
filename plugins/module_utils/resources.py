@@ -83,20 +83,6 @@ class TruenasResource(object):
         raise TruenasUnexpectedResponse("TODO : update_by_id()")
 
 
-class TruenasSystemState(TruenasResource):
-
-    RESOURCE_PATH = '/system/state'
-    RESOURCE_API_MODEL = 'json_string'
-
-    def __init__(self, conn, check_mode=False):
-        super(TruenasSystemState, self).__init__(
-            conn,
-            self.RESOURCE_PATH,
-            self.RESOURCE_API_MODEL,
-            check_mode
-        )
-
-
 class TruenasMail(TruenasResource):
 
     RESOURCE_PATH = '/mail'
@@ -104,6 +90,20 @@ class TruenasMail(TruenasResource):
 
     def __init__(self, conn, check_mode=False):
         super(TruenasMail, self).__init__(
+            conn,
+            self.RESOURCE_PATH,
+            self.RESOURCE_API_MODEL,
+            check_mode
+        )
+
+
+class TruenasSystemState(TruenasResource):
+
+    RESOURCE_PATH = '/system/state'
+    RESOURCE_API_MODEL = 'json_string'
+
+    def __init__(self, conn, check_mode=False):
+        super(TruenasSystemState, self).__init__(
             conn,
             self.RESOURCE_PATH,
             self.RESOURCE_API_MODEL,

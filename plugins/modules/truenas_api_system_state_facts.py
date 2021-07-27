@@ -8,18 +8,23 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: truenas_api_system_state_facts
+
 short_description: Retrieve TrueNAS system state
-version_added: 2.10
-description: Retrieve TrueNAS system state facts
+
+description:
+    - Retrieve TrueNAS system state facts
+
+version_added: "2.10"
+
 author:
     - Nicholas Kiraly (@nkiraly)
 """
 
 EXAMPLES = """
-- name: Gather TrueNAS System State Facts
-  connection: connection: spatiumcepa.truenas.truenas_api
-  spatiumcepa.truenas.truenas_api_system_state_facts:
-  register: system_state_task_result
+  - name: Gather TrueNAS System State Facts
+    connection: spatiumcepa.truenas.truenas_api
+    spatiumcepa.truenas.truenas_api_system_state_facts:
+    register: system_state_task_result
 """
 
 RETURN = """

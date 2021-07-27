@@ -16,10 +16,16 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 module: truenas_api_mail
+
 short_description: Configure TrueNAS mail settings
+
 description:
   - Configure TrueNAS mail settings via REST API
+
+version_added: "2.10"
+
 author: Nicholas Kiraly (@nkiraly)
+
 options:
   fromemail:
     required: true
@@ -29,9 +35,9 @@ options:
 """
 
 EXAMPLES = """
-- name: TrueNAS Mail Configuration
-  spatiumcepa.truenas.truenas_api_mail:
-    fromemail: "truenas@example.org"
+  - name: TrueNAS Mail Configuration
+    spatiumcepa.truenas.truenas_api_mail:
+      fromemail: "truenas@example.org"
 """
 
 RETURN = """

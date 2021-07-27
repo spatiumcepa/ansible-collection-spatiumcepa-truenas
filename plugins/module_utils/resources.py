@@ -18,6 +18,8 @@ class TruenasResource(object):
         self._resource_api_model = resource_api_model
         self._check_mode = check_mode
 
+        self._existing_model = None
+
         self.resource_changed = False
 
     def _send_request(self, http_method, url_path, body_params=None, path_params=None, query_params=None):
@@ -30,13 +32,20 @@ class TruenasResource(object):
         )
 
     def _send_checked_request(self, http_method, url_path, body_params=None, path_params=None, query_params=None):
+        # if we are in check_mode, respond with mocked response
         if self._check_mode:
-            return {
-                HTTPResponse.STATUS_CODE: CHECKED_REQUEST_SUCCESS_CODE,
-                HTTPResponse.HEADERS: {},
-                HTTPResponse.BODY: self._existing_model,
-            }
+            return self._mocked_response()
+
         return self._send_request(url_path, http_method, body_params, path_params, query_params)
+
+    def _mocked_response(self):
+        if self._existing_model is None:
+            raise TruenasModelError("No existing model to return for mocked response. Code branching bug?")
+        return {
+            HTTPResponse.STATUS_CODE: CHECKED_REQUEST_SUCCESS_CODE,
+            HTTPResponse.HEADERS: {'truenas-api-mocked-response': True},
+            HTTPResponse.BODY: self._existing_model,
+        }
 
     def _model_has_changes(self, existing_model, new_model):
         has_changes = False
@@ -61,6 +70,13 @@ class TruenasResource(object):
         read_response = self.read()
         self._existing_model = read_response[HTTPResponse.BODY]
         self.resource_changed = self._model_has_changes(self._existing_model, new_model)
+
+        # if there are no detected changes,
+        # return the read response and skip the API update call
+        # this ensures that configuration reloads and service restarts that middlewared enforces are not invoked unnecessarily
+        if not self.resource_changed:
+            return read_response
+
         return self._send_checked_request(HTTPMethod.PUT, self._resource_path, new_model)
 
     def update_by_id(self, id):

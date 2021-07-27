@@ -1,4 +1,9 @@
 from __future__ import absolute_import, division, print_function
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasMail
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import mail_update_arg_spec
+from ansible.module_utils.connection import Connection, ConnectionError
+from ansible.module_utils.basic import AnsibleModule
 __metaclass__ = type
 
 
@@ -9,7 +14,6 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
----
 module: truenas_api_mail
 short_description: Configure TrueNAS mail settings
 description:
@@ -37,19 +41,12 @@ response:
 """
 
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.connection import Connection, ConnectionError
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import mail_update_arg_spec
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasMail
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
-
-
 def main():
     module = AnsibleModule(
-        argument_spec = dict(
-            model = mail_update_arg_spec
+        argument_spec=dict(
+            model=mail_update_arg_spec
         ),
-        supports_check_mode = True,
+        supports_check_mode=True,
     )
 
     connection = Connection(module._socket_path)
@@ -58,9 +55,9 @@ def main():
     try:
         response = mail_resource.update(module.params['model'])
         module.exit_json(
-            changed = mail_resource.resource_changed,
-            failed = response[HTTPResponse.STATUS_CODE] != HTTPCode.OK,
-            response = response,
+            changed=mail_resource.resource_changed,
+            failed=response[HTTPResponse.STATUS_CODE] != HTTPCode.OK,
+            response=response,
         )
 
     except TruenasServerError as e:
@@ -68,12 +65,13 @@ def main():
                              'Server response: %s' % (e.code, e.response))
     except TruenasModelError as e:
         module.fail_json(msg='Data model error: %s' % (e.code, e.response))
-                             
+
     except TruenasUnexpectedResponse as e:
         module.fail_json(msg=e.args[0])
 
     except ConnectionError as e:
         module.fail_json(msg=e.args[0])
+
 
 if __name__ == '__main__':
     main()

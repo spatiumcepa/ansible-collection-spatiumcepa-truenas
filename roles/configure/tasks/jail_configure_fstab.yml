@@ -1,0 +1,37 @@
+---
+- name: Stop jail to make fstab changes
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: stopped
+
+- name: Get current jail fstab
+  uri:
+    method: POST
+    url: "{{ truenas_api_v2_base_url }}/jail/fstab"
+    validate_certs: "{{ truenas_api_v2_validate_certs }}"
+    return_content: true
+    headers: "{{ truenas_api_v2_headers }}"
+    body_format: json
+    body: "{{ jail_fstab_list_query_body | to_json }}"
+  vars:
+    jail_fstab_list_query_body:
+      jail: "{{ jail_item.name }}"
+      options:
+        action: LIST
+  register: truenus_api_result_jail_fstab_get
+
+- name: Structure response with entry filter
+  set_fact:
+    truenas_api_result_jail_fstab_get: "{{ truenus_api_result_jail_fstab_get.json  | structure_truenas_api_jail_fstab_entry_response }}"
+
+- name: Configure jail fstab entry
+  include_tasks:
+    file: jail_configure_fstab_item.yml
+  with_items: "{{ jail_item.fstab }}"
+  loop_control:
+    loop_var: jail_item_fstab_item
+
+- name: Start jail after fstab changes
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: started

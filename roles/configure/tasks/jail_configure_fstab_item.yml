@@ -1,0 +1,58 @@
+---
+- name: Set JMESPath to find jail fstab entry by source
+  set_fact:
+    truenas_jmespath_jail_fstab_by_source: "[?source=='{{ jail_item_fstab_item.source }}']"
+
+- name: Filter fstab entry by source
+  set_fact:
+    jail_fstab_list_matches: "{{ truenas_api_result_jail_fstab_get | json_query(truenas_jmespath_jail_fstab_by_source) }}"
+
+- name: Set dataset item exists if it was found in response
+  set_fact:
+    jail_fstab_item_exists: "{{ jail_fstab_list_matches | length == 1 | bool }}"
+
+- name: Set results to fact var
+  set_fact:
+    jail_fstab_item: "{{ jail_fstab_list_matches[0] }}"
+  when: jail_fstab_item_exists
+
+- name: Add fstab entry if not found
+  uri:
+    method: POST
+    url: "{{ truenas_api_v2_base_url }}/jail/fstab"
+    validate_certs: "{{ truenas_api_v2_validate_certs }}"
+    return_content: true
+    headers: "{{ truenas_api_v2_headers }}"
+    body_format: json
+    body: "{{ jail_fstab_list_query_body | to_json }}"
+  vars:
+    jail_fstab_list_query_body:
+      jail: "{{ jail_item.name }}"
+      options:
+        action: ADD
+        source: "{{ jail_item_fstab_item.source }}"
+        destination: "{{ jail_item_fstab_item.destination }}"
+        fstype: "{{ jail_item_fstab_item.fstype }}"
+        fsoptions: "{{ jail_item_fstab_item.fsoptions }}"
+  when: not jail_fstab_item_exists
+
+- name: Update fstab entry if found
+  uri:
+    method: POST
+    url: "{{ truenas_api_v2_base_url }}/jail/fstab"
+    validate_certs: "{{ truenas_api_v2_validate_certs }}"
+    return_content: true
+    headers: "{{ truenas_api_v2_headers }}"
+    body_format: json
+    body: "{{ jail_fstab_list_query_body | to_json }}"
+  vars:
+    jail_fstab_list_query_body:
+      jail: "{{ jail_item.name }}"
+      options:
+        action: REPLACE
+        index: "{{ jail_fstab_item.index }}"
+        source: "{{ jail_item_fstab_item.source }}"
+        destination: "{{ jail_item_fstab_item.destination }}"
+        fstype: "{{ jail_item_fstab_item.fstype }}"
+        fsoptions: "{{ jail_item_fstab_item.fsoptions }}"
+  when: jail_fstab_item_exists

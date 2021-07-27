@@ -1,0 +1,13 @@
+---
+# call with SSH username for connecting to the TrueNAS instance
+# ansible-playbook -vvv -i $INVENTORY $TRUENAS_VAULT_IDS truenas_ssh.yml -u root --tags truenas_jail --check
+#
+- name: Manage TrueNAS Hosts via SSH
+  hosts: truenas
+  tasks:
+    - name: Manage TrueNAS Config via API
+      include_role:
+        name: spatiumcepa.truenas.configure
+        tasks_from: main_ssh.yml
+      tags:
+        - truenas_jail

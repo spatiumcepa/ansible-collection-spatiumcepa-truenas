@@ -1,0 +1,9 @@
+---
+- name: Jail Provisioning
+  include_tasks:
+    file: jail_provision.yml
+    apply:
+      tags:
+        - truenas_jail
+  tags:
+    - truenas_jail

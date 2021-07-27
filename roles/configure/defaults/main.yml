@@ -1,0 +1,4 @@
+---
+# spatiumcepa.truenas.configure role defaults
+
+truenas_jail_host_default_root_path: "/mnt/tank/iocage/jails/{{ jail_item.name }}/root"

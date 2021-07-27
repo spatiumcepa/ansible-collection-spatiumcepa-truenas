@@ -1,0 +1,7 @@
+---
+- name: Provision Jails
+  include_tasks:
+    file: jail_provision_item.yml
+  with_items: "{{ truenas_jailhost_jails }}"
+  loop_control:
+    loop_var: jail_item

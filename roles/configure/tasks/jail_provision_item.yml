@@ -1,0 +1,44 @@
+---
+- name: Provision jail
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: "{{ jail_item.state | default('present') }}"
+    properties: "{{ jail_item.properties }}"
+  register: iocage_jail_provision_result
+
+- name: Update fstab if jail was just provisioned
+  include_tasks:
+    file: jail_configure_fstab.yml
+  when: jail_item.fstab is defined and iocage_jail_provision_result.changed
+
+- name: Install packages in jail
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: pkg
+    cmd: "install --yes {{ pkglist_item }}"
+  with_items: "{{ jail_item.pkglist }}"
+  loop_control:
+    loop_var: pkglist_item
+  when: jail_item.pkglist is defined and jail_item.pkglist | length > 0
+
+- name: Set jail configure task type file
+  set_fact:
+    jail_configure_task_file_path: "jail_configure_{{ jail_item.jail_configure_task_type }}.yml"
+  when: jail_item.jail_configure_task_type is defined
+
+- name: Scan for jail type task file exists
+  local_action:
+    module: stat
+    path: "{{ role_path }}/tasks/{{ jail_configure_task_file_path }}"
+  register: jail_type_task_file_stat_result
+  when: jail_item.jail_configure_task_type is defined
+
+- name: Fail if jail type unknown
+  fail:
+    msg: "jail_configure_task_type {{ jail_item.jail_configure_task_type }} task file {{ jail_configure_task_file_path }} not found"
+  when: jail_item.jail_configure_task_type is defined and not jail_type_task_file_stat_result.stat.exists
+
+- name: Configure jail type if defined
+  include_tasks:
+    file: "{{ jail_configure_task_file_path }}"
+  when: jail_item.jail_configure_task_type is defined

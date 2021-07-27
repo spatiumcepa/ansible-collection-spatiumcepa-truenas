@@ -1,4 +1,7 @@
 ---
+# call without username as API operations are done with the truenas_api connection wrapper that invokes connections from control machine
+# ansible-playbook -vvv -i $INVENTORY $TRUENAS_VAULT_IDS truenas_api.yml --tags truenas_mail --check
+#
 - name: Manage TrueNAS Hosts via API
   hosts: truenas
   gather_facts: false
@@ -16,3 +19,4 @@
         name: spatiumcepa.truenas.configure
         tasks_from: main_api.yml
       tags:
+        - truenas_mail

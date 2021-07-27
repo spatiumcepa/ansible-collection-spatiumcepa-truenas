@@ -1,0 +1,75 @@
+---
+- name: Get installed packages
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: pkg
+    cmd: "info"
+  register: syncthing_pkg_info_result
+  changed_when: false
+
+- name: Install syncthing packages in jail
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: pkg
+    cmd: "install --yes {{ pkglist_item }}"
+  with_items: "{{ jail_task_type_syncthing_pkglist }}"
+  loop_control:
+    loop_var: pkglist_item
+  when: syncthing_pkg_info_result.stdout_lines is not search("syncthing")
+
+- name: Read jail rc.conf
+  slurp:
+    path: "{{ jail_task_type_syncthing_jail_host_base_path }}/etc/rc.conf"
+  register: syncthing_rc_conf_slurp_result
+
+- name: Enable syncthing service in rc.conf
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: exec
+    cmd: "sysrc syncthing_enable=YES"
+  when: syncthing_rc_conf_slurp_result.content | b64decode is not search("syncthing_enable=\"YES\"")
+
+- name: Stat syncthing config file
+  stat:
+    path: "{{ jail_task_type_syncthing_jail_host_config_path }}"
+  register: syncthing_config_check_result
+
+- name: Start syncthing service if config file is missing to bootstrap it
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: exec
+    cmd: "service syncthing start"
+  when: not syncthing_config_check_result.stat.exists
+
+- name: Update syncthing config to listen on all IPs
+  xml:
+    path: "{{ jail_task_type_syncthing_jail_host_config_path }}"
+    backup: no
+    xpath: "{{ config_xml_item.xpath }}"
+    attribute: "{{ config_xml_item.attribute | default(omit) }}"
+    value: "{{ config_xml_item.value | default(omit) }}"
+    state: "{{ config_xml_item.state | default('present') }}"
+  with_items: "{{ jail_task_type_syncthing_jail_host_config_xml_changes }}"
+  loop_control:
+    loop_var: config_xml_item
+  register: config_xml_update_result
+
+- name: Restart syncthing service if configuration file changed
+  iocage:
+    name: "{{ jail_item.name }}"
+    state: exec
+    cmd: "service syncthing restart"
+  when: config_xml_update_result.changed
+
+- name: Scrape Syncthing Device ID
+  xml:
+    path: "{{ jail_task_type_syncthing_jail_host_config_path }}"
+    xpath: /configuration/device
+    content: attribute
+  register: syncthing_device_id_content_result
+
+- name: Report Syncthing Device ID
+  debug:
+    msg: "{{ jail_item.name }} Syncthing device ID {{ syncthing_device_id_content_result.matches[0].device.id }}"
+
+# TODO: configure mount share folders with syncthing API

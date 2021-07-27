@@ -142,7 +142,7 @@ class Connection(ConnectionBase):
         elif self._username:
             self._headers["Authorization"] = "Basic {}".format(
                 b64encode(
-                    bytes(f"{self._username}:{self._password}", "utf-8")
+                    bytes("%s:%s" % (self._username, self._password), "utf-8")
                 ).decode("ascii")
             )
 

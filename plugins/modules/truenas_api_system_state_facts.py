@@ -39,7 +39,7 @@ ansible_facts:
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasSystemState
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
 
 
 def main():
@@ -59,11 +59,12 @@ def main():
     system_state_resource = TruenasSystemState(connection, module.check_mode)
 
     try:
-        response_status, response_headers, response_data = system_state_resource.read()
-        system_state = response_data
+        response = system_state_resource.read()
         result['ansible_facts'] = {
-            'system_state': system_state
+            'system_state': response[HTTPResponse.BODY]
         }
+        result['response'] = response
+        result['failed'] = response[HTTPResponse.STATUS_CODE] != HTTPCode.OK
         module.exit_json(**result)
 
     except TruenasServerError as e:

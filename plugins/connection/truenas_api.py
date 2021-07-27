@@ -100,6 +100,8 @@ from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.plugins.connection import ConnectionBase, ensure_connect
 from ansible.plugins.loader import connection_loader
 
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPResponse
+
 
 API_URL_BASE_PATH = "/api/v2.0"
 
@@ -196,4 +198,10 @@ class Connection(ConnectionBase):
             raise AnsibleConnectionFailure(
                 "Could not connect to {0}: {1}".format(url, e.reason)
             )
-        return response_status, response_headers, response_data
+
+        response = {
+            HTTPResponse.STATUS_CODE: response_status,
+            HTTPResponse.HEADERS: response_headers,
+            HTTPResponse.BODY: response_data,
+        }
+        return response

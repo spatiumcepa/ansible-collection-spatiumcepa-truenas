@@ -1,5 +1,5 @@
 ---
-- name: Get System State Facts
+- name: Get System State Facts via TrueNAS API
   truenas_api_system_state_facts:
   register: truenas_result_system_state_facts
 

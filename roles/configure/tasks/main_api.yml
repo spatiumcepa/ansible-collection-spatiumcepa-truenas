@@ -9,3 +9,12 @@
   tags:
     - always
     - truenas_check_system_state
+
+- name: Manage Mail Service Configuration
+  include_tasks:
+    file: mail.yml
+    apply:
+      tags:
+        - truenas_mail
+  tags:
+    - truenas_mail

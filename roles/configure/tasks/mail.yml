@@ -1,0 +1,6 @@
+---
+- name: Email Configuration via TrueNAS API
+  truenas_api_mail:
+    model: "{{ truenas_config_mail }}"
+  register: truenas_api_result_mail_update
+  when: truenas_config_mail is defined

@@ -90,7 +90,7 @@ class TruenasMail(TruenasResource):
     RESOURCE_API_MODEL = 'mail_update'
 
     def __init__(self, conn, check_mode=False):
-        super().__init__(
+        super(TruenasMail, self).__init__(
             conn,
             self.RESOURCE_PATH,
             self.RESOURCE_API_MODEL,
@@ -104,7 +104,7 @@ class TruenasSystemState(TruenasResource):
     RESOURCE_API_MODEL = 'json_string'
 
     def __init__(self, conn, check_mode=False):
-        super().__init__(
+        super(TruenasSystemState, self).__init__(
             conn,
             self.RESOURCE_PATH,
             self.RESOURCE_API_MODEL,

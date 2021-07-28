@@ -108,7 +108,7 @@ class Connection(ConnectionBase):
     transport = "pms"
 
     def __init__(self, play_context, *args, **kwargs):
-        super().__init__(play_context, *args, **kwargs)
+        super(Connection, self).__init__(play_context, *args, **kwargs)
         self._messages = []
         self._sub_plugin = {}
         self._conn_closed = False

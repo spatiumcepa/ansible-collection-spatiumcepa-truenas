@@ -26,7 +26,7 @@ class TruenasModelError(Exception):
 
 class TruenasServerError(Exception):
     def __init__(self, response, code):
-        super().__init__(response)
+        super(TruenasServerError, self).__init__(response)
         self.response = response
         self.code = code
 

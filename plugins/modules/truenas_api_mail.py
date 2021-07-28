@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasMail
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import mail_update_arg_spec
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.basic import AnsibleModule
 __metaclass__ = type
@@ -51,7 +51,7 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=mail_update_arg_spec
+            model=API_ARG_SPECS["mail_update"]
         ),
         supports_check_mode=True,
     )

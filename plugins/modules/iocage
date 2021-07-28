@@ -26,8 +26,8 @@ import re
 
 DOCUMENTATION = """
 ---
-module: 
-version_added:
+module: iocage
+version_added: "2.7"
 short_description: FreeBSD iocage jail handling
 description:
     - The M(iocage) module allows several iocage commands to be executed through ansible.

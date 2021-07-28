@@ -1,0 +1,37 @@
+name: CI
+on:
+  pull_request:
+
+jobs:
+  sanity:
+    name: Sanity ${{ matrix.ansible }}
+    strategy:
+      matrix:
+        ansible:
+          # run sanity against all stable-X.Y branches
+          - stable-2.9
+          - stable-2.10
+          - stable-2.11
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          path: ansible_collections/spatiumcepa/truenas
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          # it is just required to run that once as "ansible-test sanity" in the docker image
+          # will run on all python versions it supports.
+          python-version: 3.8
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      # run ansible-test sanity inside of Docker.
+      # The docker container has all the pinned dependencies that are required.
+      - name: Run sanity tests
+        run: ansible-test sanity --docker -v --color
+        working-directory: ./ansible_collections/spatiumcepa/truenas

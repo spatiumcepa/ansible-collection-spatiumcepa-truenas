@@ -1,4 +1,12 @@
 from __future__ import (absolute_import, division, print_function)
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPResponse
+from ansible.plugins.loader import connection_loader
+from ansible.plugins.connection import ConnectionBase, ensure_connect
+from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
+from ansible.module_utils.urls import Request, ConnectionError
+from ansible.errors import AnsibleConnectionFailure
+import json
+from base64 import b64encode
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -7,7 +15,7 @@ connection: truenas_api
 short_description: TrueNAS API connection for truenas_api_* modules
 description:
   - Connectivity for modules that talk to the TrueNAS REST API version 2.0
-version_added: 2.10
+version_added: "2.10"
 
 options:
   address:
@@ -91,19 +99,9 @@ options:
     - name: ansible_persistent_log_messages
 """
 
-from base64 import b64encode
-import json
-
-from ansible.errors import AnsibleConnectionFailure
-from ansible.module_utils.urls import Request, ConnectionError
-from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
-from ansible.plugins.connection import ConnectionBase, ensure_connect
-from ansible.plugins.loader import connection_loader
-
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPResponse
-
 
 API_URL_BASE_PATH = "/api/v2.0"
+
 
 class Connection(ConnectionBase):
     force_persistence = True
@@ -134,15 +132,15 @@ class Connection(ConnectionBase):
         self._token = self.get_option("token")
         self._validate_certs = self.get_option("validate_certs")
         self._client = Request(
-          validate_certs = self._validate_certs
+            validate_certs=self._validate_certs
         )
 
         if self._token:
-            self._headers["Authorization"] = "Bearer {}".format(self._token)
+            self._headers["Authorization"] = "Bearer %s" % (self._token)
         elif self._username:
-            self._headers["Authorization"] = "Basic {}".format(
+            self._headers["Authorization"] = "Basic %s" % (
                 b64encode(
-                    bytes(f"{self._username}:{self._password}", "utf-8")
+                    bytes("%s:%s" % (self._username, self._password), "utf-8")
                 ).decode("ascii")
             )
 
@@ -195,9 +193,7 @@ class Connection(ConnectionBase):
             response_headers = {}
             response_data = dict(msg=str(e.reason))
         except (ConnectionError, URLError) as e:
-            raise AnsibleConnectionFailure(
-                "Could not connect to {0}: {1}".format(url, e.reason)
-            )
+            raise AnsibleConnectionFailure("Could not connect to {0}: {1}".format(url, e.reason)) from e
 
         response = {
             HTTPResponse.STATUS_CODE: response_status,

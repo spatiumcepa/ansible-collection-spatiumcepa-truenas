@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
+    TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasMail
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import mail_update_arg_spec
 from ansible.module_utils.connection import Connection, ConnectionError
@@ -15,10 +16,16 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 module: truenas_api_mail
+
 short_description: Configure TrueNAS mail settings
+
 description:
   - Configure TrueNAS mail settings via REST API
+
+version_added: "2.10"
+
 author: Nicholas Kiraly (@nkiraly)
+
 options:
   fromemail:
     required: true
@@ -28,9 +35,9 @@ options:
 """
 
 EXAMPLES = """
-- name: TrueNAS Mail Configuration
-  spatiumcepa.truenas.truenas_api_mail:
-    fromemail: "truenas@example.org"
+  - name: TrueNAS Mail Configuration
+    spatiumcepa.truenas.truenas_api_mail:
+      fromemail: "truenas@example.org"
 """
 
 RETURN = """
@@ -63,8 +70,9 @@ def main():
     except TruenasServerError as e:
         module.fail_json(msg='Server returned an error, satus code: %s. '
                              'Server response: %s' % (e.code, e.response))
+
     except TruenasModelError as e:
-        module.fail_json(msg='Data model error: %s' % (e.code, e.response))
+        module.fail_json(msg='Data model error: %s' % (e.args[0]))
 
     except TruenasUnexpectedResponse as e:
         module.fail_json(msg=e.args[0])

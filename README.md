@@ -81,3 +81,15 @@ To streamline development testing, symlink this collection into your playbook vi
 cd ~/.local/share/virtualenvs/truenas-ansible-playbook-ayo7nGjX/collections/ansible_collections/spatiumcepa/
 ln -s ~/src/ansible-collection-spatiumcepa-truenas truenas
 ```
+
+## Testing with ansible-test
+
+To ansible-test the collection locally, it needs to be in an opinionated directory structure
+```sh
+mkdir -p /tmp/ansible_collections/spatiumcepa
+rm -rf /tmp/ansible_collections/spatiumcepa/truenas
+cp -a ~/src/ansible-collection-spatiumcepa-truenas /tmp/ansible_collections/spatiumcepa/truenas
+cd /tmp/ansible_collections/spatiumcepa/truenas
+
+ansible-test sanity
+```

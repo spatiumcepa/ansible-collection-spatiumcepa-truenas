@@ -4,7 +4,8 @@ __metaclass__ = type
 import copy
 from functools import partial
 
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPMethod, HTTPResponse, TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPMethod, HTTPResponse, \
+    TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
 
 
 CHECKED_REQUEST_SUCCESS_CODE = 200
@@ -36,7 +37,7 @@ class TruenasResource(object):
         if self._check_mode:
             return self._mocked_response()
 
-        return self._send_request(url_path, http_method, body_params, path_params, query_params)
+        return self._send_request(http_method, url_path, body_params, path_params, query_params)
 
     def _mocked_response(self):
         if self._existing_model is None:
@@ -53,7 +54,7 @@ class TruenasResource(object):
         for new_key in new_keys:
             if new_key not in existing_model:
                 raise TruenasModelError("Unknown model property %s" % (new_key))
-            elif existing_model[new_key] == {} and new_model[new_key] == None:
+            elif existing_model[new_key] == {} and new_model[new_key] is None:
                 # consider existing empty dict and arg spec defaulted dict None equal
                 pass
             elif existing_model[new_key] != new_model[new_key]:
@@ -83,20 +84,6 @@ class TruenasResource(object):
         raise TruenasUnexpectedResponse("TODO : update_by_id()")
 
 
-class TruenasSystemState(TruenasResource):
-
-    RESOURCE_PATH = '/system/state'
-    RESOURCE_API_MODEL = 'json_string'
-
-    def __init__(self, conn, check_mode=False):
-        super(TruenasSystemState, self).__init__(
-            conn,
-            self.RESOURCE_PATH,
-            self.RESOURCE_API_MODEL,
-            check_mode
-        )
-
-
 class TruenasMail(TruenasResource):
 
     RESOURCE_PATH = '/mail'
@@ -104,6 +91,20 @@ class TruenasMail(TruenasResource):
 
     def __init__(self, conn, check_mode=False):
         super(TruenasMail, self).__init__(
+            conn,
+            self.RESOURCE_PATH,
+            self.RESOURCE_API_MODEL,
+            check_mode
+        )
+
+
+class TruenasSystemState(TruenasResource):
+
+    RESOURCE_PATH = '/system/state'
+    RESOURCE_API_MODEL = 'json_string'
+
+    def __init__(self, conn, check_mode=False):
+        super(TruenasSystemState, self).__init__(
             conn,
             self.RESOURCE_PATH,
             self.RESOURCE_API_MODEL,

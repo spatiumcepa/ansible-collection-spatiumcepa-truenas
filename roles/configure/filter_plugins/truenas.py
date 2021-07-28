@@ -1,3 +1,6 @@
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
 import collections
 
 """ it is unclear what JSON response is structured as
@@ -27,6 +30,8 @@ import collections
 }
 so let's convert it to a structured JSON that we can json_query
 """
+
+
 def structure_truenas_api_jail_fstab_entry_response(entry_response):
     structured_entries = []
 

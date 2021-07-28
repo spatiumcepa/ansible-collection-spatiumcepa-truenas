@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-from future.utils import raise_from
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPResponse
 from ansible.plugins.loader import connection_loader
 from ansible.plugins.connection import ConnectionBase, ensure_connect
@@ -194,7 +193,7 @@ class Connection(ConnectionBase):
             response_headers = {}
             response_data = dict(msg=str(e.reason))
         except (ConnectionError, URLError) as e:
-            raise_from(AnsibleConnectionFailure("Could not connect to {0}: {1}".format(url, e.reason)), e)
+            raise AnsibleConnectionFailure("Could not connect to {0}: {1}".format(url, e.reason)) from e
 
         response = {
             HTTPResponse.STATUS_CODE: response_status,

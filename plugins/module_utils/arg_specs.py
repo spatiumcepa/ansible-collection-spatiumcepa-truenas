@@ -38,7 +38,7 @@ API_ARG_SPECS = {
             },
             "oauth": {
                 "type": "dict",
-                "options": {
+                "suboptions": {
                     "client_id": {
                         "type": "str"
                     },

@@ -27,22 +27,60 @@ version_added: "2.10"
 author: Nicholas Kiraly (@nkiraly)
 
 options:
-  fromemail:
-    required: true
-    description:
-      - From Email for mail sent by TrueNAS
-    type: str
+  model:
+    type: dict
+    description: ''
+    suboptions:
+      fromemail:
+        description: ''
+        type: str
+      fromname:
+        description: ''
+        type: str
+      oauth:
+        description: ''
+        suboptions:
+          client_id:
+            type: str
+          client_secret:
+            type: str
+          refresh_token:
+            type: str
+        type: dict
+      outgoingserver:
+        description: ''
+        type: str
+      pass:
+        description: ''
+        type: str
+      port:
+        description: ''
+        type: int
+      security:
+        choices:
+        - PLAIN
+        - SSL
+        - TLS
+        description: ''
+        type: str
+      smtp:
+        description: ''
+        type: bool
+      user:
+        description: ''
+        type: str
 """
 
 EXAMPLES = """
-  - name: TrueNAS Mail Configuration
+  - name: Email Configuration via TrueNAS API
     spatiumcepa.truenas.truenas_api_mail:
-      fromemail: "truenas@example.org"
+      model:
+        fromemail: "truenas@spatium-cepa.io"
 """
 
 RETURN = """
 response:
-  description: HTTP response returned from the API call.
+  description: HTTP response returned from the API call
   returned: success
   type: dict
 """

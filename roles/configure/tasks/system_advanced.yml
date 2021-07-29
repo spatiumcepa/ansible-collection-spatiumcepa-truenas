@@ -1,0 +1,6 @@
+---
+- name: System Advanced Configuration via TrueNAS API
+  truenas_api_system_advanced:
+    model: "{{ truenas_config_system_advanced }}"
+  register: truenas_api_result_system_advanced_update
+  when: truenas_config_system_advanced is defined

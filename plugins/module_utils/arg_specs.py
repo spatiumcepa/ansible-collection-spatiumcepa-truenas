@@ -57,6 +57,107 @@ API_ARG_SPECS = {
             }
         }
     },
+    "system_advanced_update": {
+        "type": "dict",
+        "options": {
+            "advancedmode": {
+                "type": "bool"
+            },
+            "autotune": {
+                "type": "bool"
+            },
+            "boot_scrub": {
+                "type": "int"
+            },
+            "consolemenu": {
+                "type": "bool"
+            },
+            "consolemsg": {
+                "type": "bool"
+            },
+            "debugkernel": {
+                "type": "bool"
+            },
+            "fqdn_syslog": {
+                "type": "bool"
+            },
+            "motd": {
+                "type": "str"
+            },
+            "powerdaemon": {
+                "type": "bool"
+            },
+            "serialconsole": {
+                "type": "bool"
+            },
+            "serialport": {
+                "type": "str"
+            },
+            "serialspeed": {
+                "type": "str",
+                "choices": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ]
+            },
+            "swapondrive": {
+                "type": "int"
+            },
+            "overprovision": {
+                "type": "int"
+            },
+            "traceback": {
+                "type": "bool"
+            },
+            "uploadcrash": {
+                "type": "bool"
+            },
+            "anonstats": {
+                "type": "bool"
+            },
+            "sed_user": {
+                "type": "str",
+                "choices": [
+                    "USER",
+                    "MASTER"
+                ]
+            },
+            "sed_passwd": {
+                "type": "str"
+            },
+            "sysloglevel": {
+                "type": "str",
+                "choices": [
+                    "F_EMERG",
+                    "F_ALERT",
+                    "F_CRIT",
+                    "F_ERR",
+                    "F_WARNING",
+                    "F_NOTICE",
+                    "F_INFO",
+                    "F_DEBUG",
+                    "F_IS_DEBUG"
+                ]
+            },
+            "syslogserver": {
+                "type": "str"
+            },
+            "syslog_transport": {
+                "type": "str",
+                "choices": [
+                    "UDP",
+                    "TCP",
+                    "TLS"
+                ]
+            },
+            "syslog_tls_certificate": {
+                "type": "int"
+            }
+        }
+    },
     "general_settings": {
         "type": "dict",
         "options": {

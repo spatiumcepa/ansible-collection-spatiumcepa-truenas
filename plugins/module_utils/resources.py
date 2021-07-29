@@ -121,6 +121,20 @@ class TruenasSystemGeneral(TruenasResource):
         )
 
 
+class TruenasSystemAdvanced(TruenasResource):
+
+    RESOURCE_PATH = '/system/advanced'
+    RESOURCE_API_MODEL = 'system_advanced_update'
+
+    def __init__(self, conn, check_mode=False):
+        super(TruenasSystemAdvanced, self).__init__(
+            conn,
+            self.RESOURCE_PATH,
+            self.RESOURCE_API_MODEL,
+            check_mode
+        )
+
+
 class TruenasSystemState(TruenasResource):
 
     RESOURCE_PATH = '/system/state'

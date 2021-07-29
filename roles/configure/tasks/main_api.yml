@@ -29,3 +29,14 @@
   tags:
     - truenas_system
     - truenas_system_general
+
+- name: Manage System Advanced Service Configuration
+  include_tasks:
+    file: system_advanced.yml
+    apply:
+      tags:
+        - truenas_system
+        - truenas_system_advanced
+  tags:
+    - truenas_system
+    - truenas_system_advanced

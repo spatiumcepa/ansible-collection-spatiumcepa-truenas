@@ -1,0 +1,17 @@
+---
+# call with SSH username for connecting to the TrueNAS instance
+# ansible-playbook -vvv -i $INVENTORY $TRUENAS_VAULT_IDS truenas_syncthing.yml -u root --tags truenas_jail --check
+#
+- name: Manage TrueNAS Syncthing Jail Hosts via SSH
+  hosts: truenas
+  tasks:
+    - name: Manage TrueNAS Syncthing Jail
+      include_role:
+        name: spatiumcepa.truenas.configure
+        tasks_from: jail_provision.yml
+        defaults_from: syncthing.yml
+        apply:
+          tags:
+            - truenas_jail
+      tags:
+        - truenas_jail

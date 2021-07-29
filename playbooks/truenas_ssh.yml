@@ -5,7 +5,7 @@
 - name: Manage TrueNAS Hosts via SSH
   hosts: truenas
   tasks:
-    - name: Manage TrueNAS Config via API
+    - name: Manage TrueNAS Config via SSH
       include_role:
         name: spatiumcepa.truenas.configure
         tasks_from: main_ssh.yml

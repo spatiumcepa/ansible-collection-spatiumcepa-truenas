@@ -13,6 +13,8 @@ CHECKED_REQUEST_SUCCESS_CODE = 200
 
 class TruenasResource(object):
 
+    RESOURCE_API_MODEL = 'model_name_not_defined'
+
     def __init__(self, conn, resource_path, resource_api_model, check_mode=False):
         self._conn = conn
         self._resource_path = resource_path
@@ -53,9 +55,16 @@ class TruenasResource(object):
         new_keys = new_model.keys()
         for new_key in new_keys:
             if new_key not in existing_model:
-                raise TruenasModelError("Unknown model property %s" % (new_key))
+                # some fields defined in an API schema are not returned to spec
+                # I infer this happens for fields that were moved to a different endpoint
+                # complain via exception: the resolution is to move the field to the "current" endpoint that does expect and return the field
+                # examples of this are sysloglevel and syslogserver seem to have moved to system/advanced
+                # and as of 12.0 API are in both system_general_update_0 and system_advanced_update_0 OAS specs
+                # the way role implementers should fix their model definitions is to migrate the properties that moved to their new endpoint model for submission there
+                raise TruenasModelError("Server did not return model property %s - check API schema %s" % (new_key, self.RESOURCE_API_MODEL))
             elif existing_model[new_key] == {} and new_model[new_key] is None:
                 # consider existing empty dict and arg spec defaulted dict None equal
+                # endpoints return empty complex types as {}
                 pass
             elif existing_model[new_key] != new_model[new_key]:
                 has_changes = True
@@ -91,6 +100,20 @@ class TruenasMail(TruenasResource):
 
     def __init__(self, conn, check_mode=False):
         super(TruenasMail, self).__init__(
+            conn,
+            self.RESOURCE_PATH,
+            self.RESOURCE_API_MODEL,
+            check_mode
+        )
+
+
+class TruenasSystemGeneral(TruenasResource):
+
+    RESOURCE_PATH = '/system/general'
+    RESOURCE_API_MODEL = 'general_settings'
+
+    def __init__(self, conn, check_mode=False):
+        super(TruenasSystemGeneral, self).__init__(
             conn,
             self.RESOURCE_PATH,
             self.RESOURCE_API_MODEL,

@@ -1,0 +1,6 @@
+---
+- name: System General Configuration via TrueNAS API
+  truenas_api_system_general:
+    model: "{{ truenas_config_system_general }}"
+  register: truenas_api_result_system_general_update
+  when: truenas_config_system_general is defined

@@ -18,3 +18,14 @@
         - truenas_mail
   tags:
     - truenas_mail
+
+- name: Manage System General Service Configuration
+  include_tasks:
+    file: system_general.yml
+    apply:
+      tags:
+        - truenas_system
+        - truenas_system_general
+  tags:
+    - truenas_system
+    - truenas_system_general

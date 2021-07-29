@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasMail
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasSystemGeneral
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS, strip_null_module_params
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.basic import AnsibleModule
@@ -15,12 +15,12 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
-module: truenas_api_mail
+module: truenas_api_system_general
 
-short_description: Configure TrueNAS mail settings
+short_description: Configure TrueNAS System General settings
 
 description:
-  - Configure TrueNAS mail settings via REST API
+  - Configure Configure TrueNAS System General settings via REST API
 
 version_added: "2.10"
 
@@ -31,51 +31,66 @@ options:
     type: dict
     description: ''
     options:
-      fromemail:
-        description: ''
-        type: str
-      fromname:
-        description: ''
-        type: str
-      oauth:
-        description: ''
-        suboptions:
-          client_id:
-            type: str
-          client_secret:
-            type: str
-          refresh_token:
-            type: str
-        type: dict
-      outgoingserver:
-        description: ''
-        type: str
-      pass:
-        description: ''
-        type: str
-      port:
-        description: ''
-        type: int
-      security:
-        choices:
-        - PLAIN
-        - SSL
-        - TLS
-        description: ''
-        type: str
-      smtp:
+      crash_reporting:
         description: ''
         type: bool
-      user:
+      kbdmap:
         description: ''
         type: str
+      language:
+        description: ''
+        type: str
+      sysloglevel:
+        choices:
+        - F_EMERG
+        - F_ALERT
+        - F_CRIT
+        - F_ERR
+        - F_WARNING
+        - F_NOTICE
+        - F_INFO
+        - F_DEBUG
+        - F_IS_DEBUG
+        description: ''
+        type: str
+      syslogserver:
+        description: ''
+        type: str
+      timezone:
+        description: ''
+        type: str
+      ui_address:
+        description: ''
+        type: list
+      ui_certificate:
+        description: ''
+        type: int
+      ui_httpsport:
+        description: ''
+        type: int
+      ui_httpsprotocols:
+        description: ''
+        type: list
+      ui_httpsredirect:
+        description: ''
+        type: bool
+      ui_port:
+        description: ''
+        type: int
+      ui_v6address:
+        description: ''
+        type: list
+      usage_collection:
+        description: ''
+        type: bool
 """
 
 EXAMPLES = """
-  - name: Email Configuration via TrueNAS API
-    spatiumcepa.truenas.truenas_api_mail:
+  - name: System General Configuration via TrueNAS API
+    spatiumcepa.truenas.truenas_api_system_general:
       model:
-        fromemail: "truenas@spatium-cepa.io"
+        ui_address: ['0.0.0.0']
+        ui_httpsredirect: true
 """
 
 RETURN = """
@@ -89,19 +104,19 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasMail.RESOURCE_API_MODEL]
+            model=API_ARG_SPECS[TruenasSystemGeneral.RESOURCE_API_MODEL]
         ),
         supports_check_mode=True,
     )
 
     connection = Connection(module._socket_path)
-    mail_resource = TruenasMail(connection, module.check_mode)
+    system_general_resource = TruenasSystemGeneral(connection, module.check_mode)
 
     try:
         model_param = strip_null_module_params(module.params['model'])
-        response = mail_resource.update(model_param)
+        response = system_general_resource.update(model_param)
         module.exit_json(
-            changed=mail_resource.resource_changed,
+            changed=system_general_resource.resource_changed,
             failed=response[HTTPResponse.STATUS_CODE] != HTTPCode.OK,
             response=response,
             submitted_model=model_param,

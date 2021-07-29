@@ -3,6 +3,11 @@ __metaclass__ = type
 
 # module argument specs derived from TrueNAS API v2.0 OpenAPI Spec 3.0 definition
 
+
+def strip_null_module_params(params):
+    return {k: v for k, v in params.items() if v is not None}
+
+
 API_ARG_SPECS = {
     "mail_update": {
         "type": "dict",
@@ -49,6 +54,64 @@ API_ARG_SPECS = {
                         "type": "str"
                     }
                 }
+            }
+        }
+    },
+    "general_settings": {
+        "type": "dict",
+        "options": {
+            "ui_certificate": {
+                "type": "int"
+            },
+            "ui_httpsport": {
+                "type": "int"
+            },
+            "ui_httpsredirect": {
+                "type": "bool"
+            },
+            "ui_httpsprotocols": {
+                "type": "list"
+            },
+            "ui_port": {
+                "type": "int"
+            },
+            "ui_address": {
+                "type": "list"
+            },
+            "ui_v6address": {
+                "type": "list"
+            },
+            "kbdmap": {
+                "type": "str"
+            },
+            "language": {
+                "type": "str"
+            },
+            "sysloglevel": {
+                "type": "str",
+                "choices": [
+                    "F_EMERG",
+                    "F_ALERT",
+                    "F_CRIT",
+                    "F_ERR",
+                    "F_WARNING",
+                    "F_NOTICE",
+                    "F_INFO",
+                    "F_DEBUG",
+                    "F_IS_DEBUG"
+                ]
+            },
+            "syslogserver": {
+                "type": "str"
+            },
+            "timezone": {
+                "type": "str"
+            },
+            "crash_reporting": {
+                "type": "bool"
+            },
+            "usage_collection": {
+                "type": "bool"
             }
         }
     }

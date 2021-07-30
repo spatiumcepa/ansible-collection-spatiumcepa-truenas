@@ -59,8 +59,41 @@ def structure_truenas_api_jail_fstab_entry_response(entry_response):
     return structured_entries
 
 
+"""
+find API group id for group named group_name
+GET /api/v2.0/groups JSON looks like this
+[
+    {
+        "builtin": false,
+        "gid": 983,
+        "group": "syncthing",
+        "id": 46,
+        "id_type_both": false,
+        "local": true,
+        "smb": true,
+        "sudo": false,
+        "sudo_commands": [],
+        "sudo_nopasswd": false,
+        "users": [
+            36
+        ]
+    }
+]
+"""
+
+
+def truenas_group_id_for_name(group_list, group_name):
+    for group_item in group_list:
+        if group_item["group"] == group_name:
+            return group_item["id"]
+    return None
+
+
+
+
 class FilterModule(object):
     def filters(self):
         return {
             'structure_truenas_api_jail_fstab_entry_response': structure_truenas_api_jail_fstab_entry_response,
+            'truenas_group_id_for_name': truenas_group_id_for_name,
         }

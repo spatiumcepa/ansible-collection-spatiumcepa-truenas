@@ -19,4 +19,11 @@
         name: spatiumcepa.truenas.configure
         tasks_from: main_api.yml
       tags:
+        - truenas_group
+        - truenas_interface
         - truenas_mail
+        - truenas_network_configuration
+        - truenas_system
+        - truenas_system_advanced
+        - truenas_system_general
+        - truenas_user

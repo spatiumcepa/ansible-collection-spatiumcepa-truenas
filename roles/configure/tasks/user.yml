@@ -1,0 +1,17 @@
+---
+- name: Fetch Current Groups for use in user list group id resolution
+  truenas_api_group_facts:
+  register: truenas_api_fact_group
+
+- debug:
+    var: truenas_config_user
+
+- name: Manage Users via TrueNAS API
+  truenas_api_user:
+    model: "{{ user_item.model }}"
+    state: "{{ user_item.state | default(omit) }}"
+  register: truenas_api_result_user_update
+  with_items: "{{ truenas_config_user }}"
+  loop_control:
+    loop_var: user_item
+  when: truenas_config_user is defined

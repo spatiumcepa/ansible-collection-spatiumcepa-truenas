@@ -9,6 +9,35 @@ def strip_null_module_params(params):
 
 
 API_ARG_SPECS = {
+    "group_create": {
+        "type": "dict",
+        "options": {
+            "gid": {
+                "type": "int"
+            },
+            "name": {
+                "type": "str"
+            },
+            "smb": {
+                "type": "bool"
+            },
+            "sudo": {
+                "type": "bool"
+            },
+            "sudo_nopasswd": {
+                "type": "bool"
+            },
+            "sudo_commands": {
+                "type": "list"
+            },
+            "allow_duplicate_gid": {
+                "type": "bool"
+            },
+            "users": {
+                "type": "list"
+            }
+        }
+    },
     "interface_create": {
         "type": "dict",
         "options": {
@@ -343,6 +372,72 @@ API_ARG_SPECS = {
             },
             "usage_collection": {
                 "type": "bool"
+            }
+        }
+    },
+    "user_create": {
+        "type": "dict",
+        "options": {
+            "uid": {
+                "type": "int"
+            },
+            "username": {
+                "type": "str"
+            },
+            "group": {
+                "type": "int"
+            },
+            "group_create": {
+                "type": "bool"
+            },
+            "home": {
+                "type": "str"
+            },
+            "home_mode": {
+                "type": "str"
+            },
+            "shell": {
+                "type": "str"
+            },
+            "full_name": {
+                "type": "str"
+            },
+            "email": {
+                "type": "str"
+            },
+            "password": {
+                "type": "str"
+            },
+            "password_disabled": {
+                "type": "bool"
+            },
+            "locked": {
+                "type": "bool"
+            },
+            "microsoft_account": {
+                "type": "bool"
+            },
+            "smb": {
+                "type": "bool"
+            },
+            "sudo": {
+                "type": "bool"
+            },
+            "sudo_nopasswd": {
+                "type": "bool"
+            },
+            "sudo_commands": {
+                "type": "list"
+            },
+            "sshpubkey": {
+                "type": "str"
+            },
+            "groups": {
+                "type": "list"
+            },
+            "attributes": {
+                "type": "dict",
+                "suboptions": {}
             }
         }
     }

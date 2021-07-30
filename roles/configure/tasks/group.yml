@@ -1,0 +1,10 @@
+---
+- name: Manage Groups via TrueNAS API
+  truenas_api_group:
+    model: "{{ group_item.model }}"
+    state: "{{ group_item.state | default(omit) }}"
+  register: truenas_api_result_group_update
+  with_items: "{{ truenas_config_group }}"
+  loop_control:
+    loop_var: group_item
+  when: truenas_config_group is defined

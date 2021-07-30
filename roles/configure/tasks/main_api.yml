@@ -28,6 +28,24 @@
   tags:
     - truenas_interface
 
+- name: Manage Groups
+  include_tasks:
+    file: group.yml
+    apply:
+      tags:
+        - truenas_group
+  tags:
+    - truenas_group
+
+- name: Manage Users
+  include_tasks:
+    file: user.yml
+    apply:
+      tags:
+        - truenas_user
+  tags:
+    - truenas_user
+
 - name: Manage Mail Service Configuration
   include_tasks:
     file: mail.yml

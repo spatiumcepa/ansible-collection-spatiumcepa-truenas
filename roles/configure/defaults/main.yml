@@ -2,3 +2,62 @@
 # spatiumcepa.truenas.configure role defaults
 
 truenas_jail_host_default_root_path: "/mnt/tank/iocage/jails/{{ jail_item.name }}/root"
+
+## syncthing jail minimal configuration
+jail_task_type_syncthing_pkglist:
+  - "syncthing-1.15.1"
+jail_task_type_syncthing_jail_host_base_path: "{{ jail_item.jail_host_root_path | default(truenas_jail_host_default_root_path) }}"
+jail_task_type_syncthing_jail_host_config_path: "{{ jail_task_type_syncthing_jail_host_base_path }}/usr/local/etc/syncthing/config.xml"
+jail_task_type_syncthing_jail_host_config_xml_changes:
+  - xpath: /configuration/gui
+    attribute: enabled
+    value: "true"
+  - xpath: /configuration/gui
+    attribute: tls
+    value: "true"
+  - xpath: /configuration/gui/address
+    value: "0.0.0.0:8384"
+  - xpath: /configuration/gui/user
+    value: "{{ truenas_syncthing_admin_username }}"
+  - xpath: /configuration/gui/password
+    value: "{{ truenas_syncthing_admin_password }}"
+  # purge the default folder entry
+  - xpath: /configuration/folder[@id='default']
+    state: absent
+  # no syncing outside of local network
+  - xpath: /configuration/options/globalAnnounceEnabled
+    value: "false"
+  - xpath: /configuration/options/localAnnounceEnabled
+    value: "true"
+  - xpath: /configuration/options/relaysEnabled
+    value: "false"
+  - xpath: /configuration/options/natEnabled
+    value: "false"
+  # remove unackedNotificationID, we are setting a gui user and password
+  - xpath: /configuration/options/unackedNotificationID
+    value: authenticationUserAndPassword
+    state: absent
+  - xpath: /configuration/options/urAccepted
+    value: "3"
+  - xpath: /configuration/options/urSeen
+    value: "3"
+
+truenas_role_default_group_syncthing:
+  model:
+    gid: 983
+    name: syncthing
+    sudo: false
+  state: present
+
+truenas_role_default_user_syncthing:
+  model:
+    uid: 983
+    username: syncthing
+    group_create: false
+    group: "{{ truenas_api_fact_group.ansible_facts.group | spatiumcepa.truenas.truenas_group_id_for_name('syncthing') | int }}"
+    full_name: Syncthing User
+    home: /mnt/tank/syncthing
+    password_disabled: true
+    shell: /bin/csh
+    sudo: false
+  state: present

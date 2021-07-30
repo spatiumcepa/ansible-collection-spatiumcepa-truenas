@@ -9,7 +9,6 @@
       include_role:
         name: spatiumcepa.truenas.configure
         tasks_from: jail_provision.yml
-        defaults_from: syncthing.yml
         apply:
           tags:
             - truenas_jail

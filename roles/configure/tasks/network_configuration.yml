@@ -1,0 +1,6 @@
+---
+- name: Network Configuration via TrueNAS API
+  truenas_api_network_configuration:
+    model: "{{ truenas_config_network_configuration }}"
+  when: truenas_config_network_configuration is defined
+  register: truenas_api_result_network_configuration_update

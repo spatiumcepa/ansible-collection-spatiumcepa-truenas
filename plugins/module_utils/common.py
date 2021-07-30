@@ -11,6 +11,7 @@ class HTTPMethod:
 
 class HTTPCode:
     OK = 200
+    NOT_FOUND = 404
 
 
 class HTTPResponse:

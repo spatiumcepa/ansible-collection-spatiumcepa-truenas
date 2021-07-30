@@ -20,7 +20,7 @@ module: truenas_api_system_general
 short_description: Configure TrueNAS System General settings
 
 description:
-  - Configure Configure TrueNAS System General settings via REST API
+  - Configure TrueNAS System General settings via REST API
 
 version_added: "2.10"
 

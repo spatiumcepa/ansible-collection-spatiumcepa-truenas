@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasSystemAdvanced
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasInterface
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS, strip_null_module_params
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.basic import AnsibleModule
@@ -15,12 +15,12 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
-module: truenas_api_system_advanced
+module: truenas_api_interface
 
-short_description: Configure TrueNAS System Advanced settings
+short_description: Manage TrueNAS Interfaces
 
 description:
-  - Configure TrueNAS System Advanced settings via REST API
+  - Manage TrueNAS Interfaces via REST API
 
 version_added: "2.10"
 
@@ -31,107 +31,80 @@ options:
     type: dict
     description: ''
     options:
-      advancedmode:
+      aliases:
+        description: ''
+        type: list
+      bridge_members:
+        description: ''
+        type: list
+      description:
+        description: ''
+        type: str
+      disable_offload_capabilities:
         description: ''
         type: bool
-      anonstats:
+      failover_aliases:
+        description: ''
+        type: list
+      failover_critical:
         description: ''
         type: bool
-      autotune:
-        description: ''
-        type: bool
-      boot_scrub:
+      failover_group:
         description: ''
         type: int
-      consolemenu:
-        description: ''
-        type: bool
-      consolemsg:
-        description: ''
-        type: bool
-      debugkernel:
-        description: ''
-        type: bool
-      fqdn_syslog:
-        description: ''
-        type: bool
-      motd:
-        description: ''
-        type: str
-      overprovision:
+      failover_vhid:
         description: ''
         type: int
-      powerdaemon:
+      failover_virtual_aliases:
+        description: ''
+        type: list
+      ipv4_dhcp:
         description: ''
         type: bool
-      sed_passwd:
-        description: ''
-        type: str
-      sed_user:
-        choices:
-        - USER
-        - MASTER
-        description: ''
-        type: str
-      serialconsole:
+      ipv6_auto:
         description: ''
         type: bool
-      serialport:
+      lag_ports:
         description: ''
-        type: str
-      serialspeed:
+        type: list
+      lag_protocol:
         choices:
-        - '9600'
-        - '19200'
-        - '38400'
-        - '57600'
-        - '115200'
+        - LACP
+        - FAILOVER
+        - LOADBALANCE
+        - ROUNDROBIN
+        - NONE
         description: ''
         type: str
-      swapondrive:
+      mtu:
         description: ''
         type: int
-      syslog_tls_certificate:
+      name:
+        description: ''
+        type: str
+      options:
+        description: ''
+        type: str
+      vlan_parent_interface:
+        description: ''
+        type: str
+      vlan_pcp:
         description: ''
         type: int
-      syslog_transport:
-        choices:
-        - UDP
-        - TCP
-        - TLS
+      vlan_tag:
         description: ''
-        type: str
-      sysloglevel:
-        choices:
-        - F_EMERG
-        - F_ALERT
-        - F_CRIT
-        - F_ERR
-        - F_WARNING
-        - F_NOTICE
-        - F_INFO
-        - F_DEBUG
-        - F_IS_DEBUG
-        description: ''
-        type: str
-      syslogserver:
-        description: ''
-        type: str
-      traceback:
-        description: ''
-        type: bool
-      uploadcrash:
-        description: ''
-        type: bool
+        type: int
 """
 
 EXAMPLES = """
-  - name: System Advanced Configuration via TrueNAS API
-    spatiumcepa.truenas.truenas_api_system_advanced:
+  - name: Interface Configuration via TrueNAS API
+    spatiumcepa.truenas.truenas_api_interface:
       model:
-        autotune: true
-        consolemenu: true
-        serialconsole: true
+        name: lagg0
+        aliases:
+          - type: INET
+            address: 172.16.13.41
+            netmask: 23
 """
 
 RETURN = """
@@ -145,21 +118,33 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasSystemAdvanced.RESOURCE_API_MODEL]
+            model=API_ARG_SPECS[TruenasInterface.RESOURCE_API_MODEL]
         ),
         supports_check_mode=True,
     )
 
     connection = Connection(module._socket_path)
-    system_general_resource = TruenasSystemAdvanced(connection, module.check_mode)
+    interface_resource = TruenasInterface(connection, module.check_mode)
 
     try:
+        response = None
+        created = False
         model_param = strip_null_module_params(module.params['model'])
-        response = system_general_resource.update(model_param)
+
+        find_item_response = interface_resource.find_item(model_param)
+        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+            # not found, so create it
+            response = interface_resource.create(model_param)
+            created = True
+        else:
+            found_id = find_item_response[HTTPResponse.BODY][TruenasInterface.RESOURCE_ITEM_ID_FIELD]
+            response = interface_resource.update_item(found_id, model_param)
+
         module.exit_json(
-            changed=system_general_resource.resource_changed,
+            changed=interface_resource.resource_changed,
             failed=response[HTTPResponse.STATUS_CODE] != HTTPCode.OK,
             response=response,
+            created=created,
             submitted_model=model_param,
         )
 

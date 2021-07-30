@@ -1,0 +1,10 @@
+---
+- name: Interface Item Configuration via TrueNAS API
+  truenas_api_interface:
+    model: "{{ interface_item }}"
+  register: truenas_api_result_system_general_update
+  
+  with_items: "{{ truenas_config_interface }}"
+  loop_control:
+    loop_var: interface_item
+  when: truenas_config_interface is defined

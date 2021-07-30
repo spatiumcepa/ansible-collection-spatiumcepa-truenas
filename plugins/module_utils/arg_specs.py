@@ -9,6 +9,75 @@ def strip_null_module_params(params):
 
 
 API_ARG_SPECS = {
+    "interface_create": {
+        "type": "dict",
+        "options": {
+            "name": {
+                "type": "str"
+            },
+            "description": {
+                "type": "str"
+            },
+            "disable_offload_capabilities": {
+                "type": "bool"
+            },
+            "ipv4_dhcp": {
+                "type": "bool"
+            },
+            "ipv6_auto": {
+                "type": "bool"
+            },
+            "aliases": {
+                "type": "list"
+            },
+            "failover_critical": {
+                "type": "bool"
+            },
+            "failover_group": {
+                "type": "int"
+            },
+            "failover_vhid": {
+                "type": "int"
+            },
+            "failover_aliases": {
+                "type": "list"
+            },
+            "failover_virtual_aliases": {
+                "type": "list"
+            },
+            "bridge_members": {
+                "type": "list"
+            },
+            "lag_protocol": {
+                "type": "str",
+                "choices": [
+                    "LACP",
+                    "FAILOVER",
+                    "LOADBALANCE",
+                    "ROUNDROBIN",
+                    "NONE"
+                ]
+            },
+            "lag_ports": {
+                "type": "list"
+            },
+            "vlan_parent_interface": {
+                "type": "str"
+            },
+            "vlan_tag": {
+                "type": "int"
+            },
+            "vlan_pcp": {
+                "type": "int"
+            },
+            "mtu": {
+                "type": "int"
+            },
+            "options": {
+                "type": "str"
+            }
+        }
+    },
     "mail_update": {
         "type": "dict",
         "options": {
@@ -54,6 +123,67 @@ API_ARG_SPECS = {
                         "type": "str"
                     }
                 }
+            }
+        }
+    },
+    "global_configuration_update": {
+        "type": "dict",
+        "options": {
+            "hostname": {
+                "type": "str"
+            },
+            "hostname_b": {
+                "type": "str"
+            },
+            "hostname_virtual": {
+                "type": "str"
+            },
+            "domain": {
+                "type": "str"
+            },
+            "domains": {
+                "type": "list"
+            },
+            "service_announcement": {
+                "type": "dict",
+                "suboptions": {
+                    "netbios": {
+                        "type": "bool"
+                    },
+                    "mdns": {
+                        "type": "bool"
+                    },
+                    "wsd": {
+                        "type": "bool"
+                    }
+                }
+            },
+            "ipv4gateway": {
+                "type": "str"
+            },
+            "ipv6gateway": {
+                "type": "str"
+            },
+            "nameserver1": {
+                "type": "str"
+            },
+            "nameserver2": {
+                "type": "str"
+            },
+            "nameserver3": {
+                "type": "str"
+            },
+            "httpproxy": {
+                "type": "str"
+            },
+            "netwait_enabled": {
+                "type": "bool"
+            },
+            "netwait_ip": {
+                "type": "list"
+            },
+            "hosts": {
+                "type": "str"
             }
         }
     },

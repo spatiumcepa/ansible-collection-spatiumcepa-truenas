@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasMail
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasNetworkConfiguration
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS, strip_null_module_params
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.basic import AnsibleModule
@@ -15,12 +15,12 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
-module: truenas_api_mail
+module: truenas_api_network_configuration
 
-short_description: Configure TrueNAS mail settings
+short_description: Configure TrueNAS Network Configuration settings
 
 description:
-  - Configure TrueNAS mail settings via REST API
+  - Configure TrueNAS Network Configuration settings via REST API
 
 version_added: "2.10"
 
@@ -31,51 +31,69 @@ options:
     type: dict
     description: ''
     options:
-      fromemail:
+      domain:
         description: ''
         type: str
-      fromname:
+      domains:
+        description: ''
+        type: list
+      hostname:
         description: ''
         type: str
-      oauth:
-        description: ''
-        suboptions:
-          client_id:
-            type: str
-          client_secret:
-            type: str
-          refresh_token:
-            type: str
-        type: dict
-      outgoingserver:
+      hostname_b:
         description: ''
         type: str
-      pass:
+      hostname_virtual:
         description: ''
         type: str
-      port:
-        description: ''
-        type: int
-      security:
-        choices:
-        - PLAIN
-        - SSL
-        - TLS
+      hosts:
         description: ''
         type: str
-      smtp:
+      httpproxy:
+        description: ''
+        type: str
+      ipv4gateway:
+        description: ''
+        type: str
+      ipv6gateway:
+        description: ''
+        type: str
+      nameserver1:
+        description: ''
+        type: str
+      nameserver2:
+        description: ''
+        type: str
+      nameserver3:
+        description: ''
+        type: str
+      netwait_enabled:
         description: ''
         type: bool
-      user:
+      netwait_ip:
         description: ''
-        type: str
+        type: list
+      service_announcement:
+        description: ''
+        suboptions:
+          mdns:
+            type: bool
+          netbios:
+            type: bool
+          wsd:
+            type: bool
+        type: dict
 """
 
 EXAMPLES = """
-  - name: Email Configuration via TrueNAS API
-    spatiumcepa.truenas.truenas_api_mail:
+  - name: System Network Configuration via TrueNAS API
+    spatiumcepa.truenas.truenas_api_network_configuration:
       model:
-        fromemail: "truenas@spatium-cepa.com"
+        hostname: truenas01
+        domain: spatium-cepa.com
+        ipv4gateway: 172.16.13.1
+        nameserver1: 172.16.13.7
+        nameserver2: 172.16.17.7
 """
 
 RETURN = """
@@ -89,19 +107,19 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasMail.RESOURCE_API_MODEL]
+            model=API_ARG_SPECS[TruenasNetworkConfiguration.RESOURCE_API_MODEL]
         ),
         supports_check_mode=True,
     )
 
     connection = Connection(module._socket_path)
-    mail_resource = TruenasMail(connection, module.check_mode)
+    network_configuration_resource = TruenasNetworkConfiguration(connection, module.check_mode)
 
     try:
         model_param = strip_null_module_params(module.params['model'])
-        response = mail_resource.update(model_param)
+        response = network_configuration_resource.update(model_param)
         module.exit_json(
-            changed=mail_resource.resource_changed,
+            changed=network_configuration_resource.resource_changed,
             failed=response[HTTPResponse.STATUS_CODE] != HTTPCode.OK,
             response=response,
             submitted_model=model_param,

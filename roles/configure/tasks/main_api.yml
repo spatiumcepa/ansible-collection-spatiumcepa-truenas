@@ -10,6 +10,24 @@
     - always
     - truenas_check_system_state
 
+- name: Manage Network Configuration
+  include_tasks:
+    file: network_configuration.yml
+    apply:
+      tags:
+        - truenas_network_configuration
+  tags:
+    - truenas_network_configuration
+
+- name: Manage Interface Configuration
+  include_tasks:
+    file: interface.yml
+    apply:
+      tags:
+        - truenas_interface
+  tags:
+    - truenas_interface
+
 - name: Manage Mail Service Configuration
   include_tasks:
     file: mail.yml

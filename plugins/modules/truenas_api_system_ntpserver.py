@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasUser
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasSystemNtpserver
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS, strip_null_module_params
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.basic import AnsibleModule
@@ -15,12 +15,12 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
-module: truenas_api_user
+module: truenas_api_system_ntpserver
 
-short_description: Manage TrueNAS Users
+short_description: Manage TrueNAS Groups
 
 description:
-  - Manage TrueNAS Users via REST API
+  - Manage TrueNAS Groups via REST API
 
 version_added: "2.10"
 
@@ -29,7 +29,7 @@ author: Nicholas Kiraly (@nkiraly)
 options:
   state:
     type: str
-    description: Desired state of the user
+    description: Desired state of the group
     default: present
     choices: [ absent, present ]
   model:
@@ -97,11 +97,12 @@ options:
 """
 
 EXAMPLES = """
-  - name: Manage User via TrueNAS API
-    spatiumcepa.truenas.truenas_api_group:
-      name: root
+  - name: Manage Group via TrueNAS API
+    spatiumcepa.truenas.truenas_api_system_ntpserver:
       model:
-        email: truenas@spatium-cepa.com
+        address: hq2-dc01.corp.vicarious.com
+        prefer: true
+      state: present
 """
 
 RETURN = """
@@ -115,14 +116,14 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasUser.RESOURCE_API_MODEL],
+            model=API_ARG_SPECS[TruenasSystemNtpserver.RESOURCE_API_MODEL],
             state={'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'}
         ),
         supports_check_mode=True,
     )
 
     connection = Connection(module._socket_path)
-    user_resource = TruenasUser(connection, module.check_mode)
+    ntpserver_resource = TruenasSystemNtpserver(connection, module.check_mode)
 
     try:
         response = None
@@ -130,16 +131,16 @@ def main():
         state_param = module.params['state']
 
         if state_param == 'present':
-            response = user_resource.update_item(model_param)
+            response = ntpserver_resource.update_item(model_param)
             failed = response[HTTPResponse.STATUS_CODE] != HTTPCode.OK
         elif state_param == 'absent':
-            response = user_resource.delete_item(model_param)
+            response = ntpserver_resource.delete_item(model_param)
             failed = response[HTTPResponse.STATUS_CODE] not in [HTTPCode.OK, HTTPCode.NOT_FOUND]
 
         module.exit_json(
-            created=user_resource.resource_created,
-            changed=user_resource.resource_changed,
-            deleted=user_resource.resource_deleted,
+            created=ntpserver_resource.resource_created,
+            changed=ntpserver_resource.resource_changed,
+            deleted=ntpserver_resource.resource_deleted,
             failed=failed,
             response=response,
             submitted_model=model_param,

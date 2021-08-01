@@ -76,3 +76,14 @@
   tags:
     - truenas_system
     - truenas_system_advanced
+
+- name: Manage System NTP Server Configuration
+  include_tasks:
+    file: system_ntpserver.yml
+    apply:
+      tags:
+        - truenas_system
+        - truenas_system_ntpserver
+  tags:
+    - truenas_system
+    - truenas_system_ntpserver

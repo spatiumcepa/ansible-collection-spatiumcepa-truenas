@@ -128,23 +128,22 @@ def main():
 
     try:
         response = None
-        created = False
         model_param = strip_null_module_params(module.params['model'])
+        state_param = module.params['state']
 
-        find_item_response = interface_resource.find_item(model_param)
-        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
-            # not found, so create it
-            response = interface_resource.create(model_param)
-            created = True
-        else:
-            found_id = find_item_response[HTTPResponse.BODY][TruenasInterface.RESOURCE_ITEM_ID_FIELD]
-            response = interface_resource.update_item(found_id, model_param)
+        if state_param == 'present':
+            response = interface_resource.update_item(model_param)
+            failed = response[HTTPResponse.STATUS_CODE] != HTTPCode.OK
+        elif state_param == 'absent':
+            response = interface_resource.delete_item(model_param)
+            failed = response[HTTPResponse.STATUS_CODE] not in [HTTPCode.OK, HTTPCode.NOT_FOUND]
 
         module.exit_json(
+            created=interface_resource.resource_created,
             changed=interface_resource.resource_changed,
-            failed=response[HTTPResponse.STATUS_CODE] != HTTPCode.OK,
+            deleted=interface_resource.resource_deleted,
+            failed=failed,
             response=response,
-            created=created,
             submitted_model=model_param,
         )
 

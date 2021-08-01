@@ -21,15 +21,18 @@ class TruenasResource(object):
         self._check_mode = check_mode
 
         self.resource_changed = False
+        self.resource_created = False
+        self.resource_deleted = False
 
     def _send_request(self, http_method, url_path, body_params=None, path_params=None, query_params=None):
-        return self._conn.send_request(
+        response = self._conn.send_request(
             http_method=http_method,
             url_path=url_path,
             body_params=body_params,
             path_params=path_params,
             query_params=query_params
         )
+        return response
 
     def _send_checked_request(self, existing_model, http_method, url_path, body_params=None, path_params=None, query_params=None):
         # if we are in check_mode, respond with mocked response
@@ -71,6 +74,7 @@ class TruenasResource(object):
         existing_model = new_model
         create_response = self._send_checked_request(existing_model, HTTPMethod.POST, self._RESOURCE_PATH, new_model)
         self.resource_changed = create_response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
+        self.resource_created = self.resource_changed
         return create_response
 
     def read(self):
@@ -125,25 +129,39 @@ class TruenasResource(object):
 
         return self._send_checked_request(existing_model, HTTPMethod.PUT, self._RESOURCE_PATH, new_model)
 
-    def update_item(self, id, new_model):
-        read_response = self.read_item_by_id(id)
-        existing_model = read_response[HTTPResponse.BODY]
-        self.resource_changed = self._model_has_changes(existing_model, new_model)
+    def update_item(self, model):
+        find_item_response = self.find_item(model)
+        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+            # not found, route to create
+            response = self.create(model)
+            self.resource_created = response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
+            return response
 
+        # upate found item
+        found_item = find_item_response[HTTPResponse.BODY]
+        found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
+
+        self.resource_changed = self._model_has_changes(found_item, model)
+        # if model does not have changes, respond with find repsonse and avoid submitting data with no delta
         if not self.resource_changed:
-            return read_response
+            return find_item_response
 
-        return self._send_checked_request(existing_model, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=id), new_model)
+        return self._send_checked_request(found_item, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=found_item_id), model)
 
     def delete_item(self, model):
-        find_response = self.find_item(id)
-        if find_response[HTTPResponse.STATUS_CODE] != HTTPCode.OK:
-            # if we can't read it, we won't be deleting anything
-            # we check the read return code so we can report changed without submitting a delete
-            return find_response
+        find_item_response = self.find_item(model)
+        # if it could not be found, it doesn't need deleted
+        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+            return find_item_response
 
-        delete_response = self._send_checked_request({}, HTTPMethod.DELETE, self._RESOURCE_ITEM_PATH.format(id=id))
-        self.resource_changed = delete_response[HTTPResponse.STATUS_CODE] != HTTPCode.OK
+        # delete found item
+        # upate found item
+        found_item = find_item_response[HTTPResponse.BODY]
+        found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
+
+        delete_response = self._send_checked_request({}, HTTPMethod.DELETE, str(self._RESOURCE_ITEM_PATH.format(id=found_item_id)))
+        self.resource_changed = delete_response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
+        self.resource_deleted = self.resource_changed
         return delete_response
 
 
@@ -182,8 +200,8 @@ class TruenasInterface(TruenasResource):
 
 class TruenasMail(TruenasResource):
 
-    RESOURCE_API_MODEL = 'mail'
-    _RESOURCE_PATH = '/mail_update'
+    RESOURCE_API_MODEL = 'mail_update'
+    _RESOURCE_PATH = '/mail'
 
 
 class TruenasNetworkConfiguration(TruenasResource):
@@ -202,6 +220,14 @@ class TruenasSystemGeneral(TruenasResource):
 
     RESOURCE_API_MODEL = 'general_settings'
     _RESOURCE_PATH = '/system/general'
+
+
+class TruenasSystemNtpserver(TruenasResource):
+
+    RESOURCE_API_MODEL = 'ntp_create'
+    _RESOURCE_PATH = '/system/ntpserver'
+    _RESOURCE_ITEM_PATH = '/system/ntpserver/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'address'
 
 
 class TruenasSystemState(TruenasResource):
@@ -239,3 +265,9 @@ class TruenasUser(TruenasResource):
             elif existing_model[new_key] != new_model[new_key]:
                 has_changes = True
         return has_changes
+
+    def update_item(self, model):
+        # group_create is in #/components/schemas/user_create_0 but not in #/components/schemas/user_update_1
+        update_model = model
+        popped = update_model.pop("group_create", None)
+        return TruenasResource.update_item(self, update_model)

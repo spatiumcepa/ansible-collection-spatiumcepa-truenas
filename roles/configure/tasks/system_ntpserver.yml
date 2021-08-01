@@ -1,0 +1,10 @@
+---
+- name: Manage System NTP Server Items
+  truenas_api_system_ntpserver:
+    model: "{{ ntpserver_item.model }}"
+    state: "{{ ntpserver_item.state | default(omit) }}"
+  register: truenas_api_result_system_ntpserver_update
+  with_items: "{{ truenas_config_system_ntpserver }}"
+  loop_control:
+    loop_var: ntpserver_item
+  when: truenas_config_system_ntpserver is defined

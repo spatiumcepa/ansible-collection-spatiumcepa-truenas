@@ -15,7 +15,7 @@ connection: truenas_api
 short_description: TrueNAS API connection for truenas_api_* modules
 description:
   - Connectivity for modules that talk to the TrueNAS REST API version 2.0
-version_added: "2.10"
+version_added: "0.1"
 
 options:
   address:

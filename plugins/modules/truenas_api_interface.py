@@ -22,7 +22,7 @@ short_description: Manage TrueNAS Interfaces
 description:
   - Manage TrueNAS Interfaces via REST API
 
-version_added: "2.10"
+version_added: "0.1"
 
 author: Nicholas Kiraly (@nkiraly)
 

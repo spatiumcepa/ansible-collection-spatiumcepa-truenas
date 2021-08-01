@@ -14,7 +14,7 @@ short_description: Retrieve TrueNAS system state
 description:
     - Retrieve TrueNAS system state facts
 
-version_added: "2.10"
+version_added: "0.1"
 
 author:
     - Nicholas Kiraly (@nkiraly)

@@ -1,0 +1,29 @@
+---
+- name: SSH Service Configuration via TrueNAS API
+  truenas_api_ssh:
+    model: "{{ truenas_config_service_ssh.model }}"
+  register: truenas_api_result_ssh_update
+  when: truenas_config_service_ssh is defined
+
+- name: NFS Service Configuration via TrueNAS API
+  truenas_api_nfs:
+    model: "{{ truenas_config_service_nfs.model }}"
+  register: truenas_api_result_ssh_update
+  when: truenas_config_service_nfs is defined
+
+- name: CIFS Service Configuration via TrueNAS API
+  truenas_api_smb:
+    model: "{{ truenas_config_service_smb.model }}"
+  register: truenas_api_result_ssh_update
+  when: truenas_config_service_smb is defined
+
+- name: Service Item Management via TrueNAS API
+  truenas_api_service:
+    name: "{{ service_item.name }}"
+    enable: "{{ service_item.enable | default(omit) }}"
+    running: "{{ service_item.running | default(omit) }}"
+  register: truenas_api_result_service_item_update
+  with_items: "{{ truenas_config_service }}"
+  loop_control:
+    loop_var: service_item
+  when: truenas_config_service is defined

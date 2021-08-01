@@ -97,3 +97,13 @@
   tags:
     - truenas_alertservice
   when: truenas_config_alertservice is defined
+
+- name: Manage Service Configuration
+  include_tasks:
+    file: service.yml
+    apply:
+      tags:
+        - truenas_service
+  tags:
+    - truenas_service
+  when: truenas_config_service is defined

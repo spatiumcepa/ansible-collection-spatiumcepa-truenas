@@ -218,6 +218,93 @@ class TruenasNetworkConfiguration(TruenasResource):
     _RESOURCE_PATH = '/network/configuration'
 
 
+class TruenasService(TruenasResource):
+
+    RESOURCE_API_MODEL = None
+    _RESOURCE_PATH = '/service'
+    _RESOURCE_ITEM_PATH = '/service/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'service'
+
+    def service_action(self, name, action):
+        find_service_response = self.find_item({'service': name})
+        if find_service_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+            # not found, return not found response
+            self.resource_changed = False
+            return find_service_response
+
+        found_item = find_service_response[HTTPResponse.BODY]
+        self.resource_changed = False
+        if action == 'reload':
+            self.resource_changed = True
+        elif action == 'restart':
+            self.resource_changed = True
+        elif action == 'start':
+            if found_item['state'] == 'STOPPED':
+                self.resource_changed = True
+        elif action == 'stop':
+            if found_item['state'] == 'RUNNING':
+                self.resource_changed = True
+        else:
+            raise TruenasModelError("Unknown action specified: %s" % (action))
+
+        # if there are no detected changes,
+        # return the found item response and skip the API action call
+        # this ensures that configuration reloads and service restarts that middlewared does are not invoked unnecessarily
+        if not self.resource_changed:
+            return find_service_response
+
+        return self._send_checked_request(found_item, HTTPMethod.POST, self._RESOURCE_PATH + '/' + action, {'service': name})
+
+    def service_state(self, name, enable, running):
+        find_service_response = self.find_item({'service': name})
+        if find_service_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+            # not found, return not found response
+            self.resource_changed = False
+            return find_service_response
+
+        found_item = find_service_response[HTTPResponse.BODY]
+        found_item_id = found_item['id']
+        found_item_is_running = found_item['state'] == 'RUNNING'
+        self.resource_changed = False
+        if found_item['enable'] != enable:
+            self.resource_changed = True
+        if found_item_is_running != running:
+            self.resource_changed = True
+        # if there are no detected changes,
+        # return the found item response and skip the API update call
+        # this ensures that configuration reloads and service restarts that middlewared does are not invoked unnecessarily
+        if not self.resource_changed:
+            return find_service_response
+
+        response = None
+        if found_item['enable'] != enable:
+            response = self._send_checked_request(found_item, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=found_item_id), {'enable': enable})
+        if running and not found_item_is_running:
+            response = self._send_checked_request(found_item, HTTPMethod.POST, self._RESOURCE_PATH + '/start', {'service': name})
+        if not running and found_item_is_running:
+            response = self._send_checked_request(found_item, HTTPMethod.POST, self._RESOURCE_PATH + '/stop', {'service': name})
+        return response
+
+    def service_settings(self, name, service_url, settings):
+        find_service_response = self.find_item({'service': name})
+        if find_service_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+            # not found, return not found response
+            self.resource_changed = False
+            return find_service_response
+
+        existing_settings_response = self._send_request(HTTPMethod.GET, service_url)
+        existing_settings = existing_settings_response[HTTPResponse.BODY]
+        self.resource_changed = self._model_has_changes(existing_settings, settings)
+
+        # if there are no detected changes,
+        # return the existing settings response and skip the API update call
+        # this ensures that configuration reloads and service restarts that middlewared does are not invoked unnecessarily
+        if not self.resource_changed:
+            return existing_settings_response
+
+        return self._send_checked_request(existing_settings, HTTPMethod.PUT, service_url, settings)
+
+
 class TruenasSystemAdvanced(TruenasResource):
 
     RESOURCE_API_MODEL = 'system_advanced_update'

@@ -165,6 +165,41 @@ class TruenasResource(object):
         return delete_response
 
 
+class TruenasActivedirectory(TruenasResource):
+
+    RESOURCE_API_MODEL = 'activedirectory_update'
+    _RESOURCE_PATH = '/activedirectory'
+
+    def update(self, new_model):
+        config_model = new_model.copy()
+        enable_model = {
+            'enable': config_model.pop('enable', False)
+        }
+        if 'bindname' in config_model:
+            enable_model['bindname'] = config_model.pop('bindname')
+        if 'bindpw' in config_model:
+            enable_model['bindpw'] = config_model.pop('bindpw')
+
+        existing_response = self.read()
+        existing_model = existing_response[HTTPResponse.BODY]
+        self.resource_changed = self._model_has_changes(existing_model, config_model)
+        if existing_model['enable'] != new_model['enable']:
+            self.resource_changed = True
+
+        # if there are no detected changes,
+        # return the existing response and skip the API update call
+        # this ensures that configuration reloads and service restarts that middlewared does are not invoked unnecessarily
+        if not self.resource_changed:
+            return existing_response
+
+        response = None
+        if self._model_has_changes(existing_model, config_model):
+            response = self._send_checked_request(existing_model, HTTPMethod.PUT, self._RESOURCE_PATH, config_model)
+        if existing_model['enable'] != new_model['enable']:
+            response = self._send_checked_request(existing_model, HTTPMethod.PUT, self._RESOURCE_PATH, enable_model)
+        return response
+
+
 class TruenasGroup(TruenasResource):
 
     RESOURCE_API_MODEL = 'group_create'
@@ -195,6 +230,14 @@ class TruenasAlertservice(TruenasResource):
     RESOURCE_API_MODEL = 'alert_service_create'
     _RESOURCE_PATH = '/alertservice'
     _RESOURCE_ITEM_PATH = '/alertservice/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'name'
+
+
+class TruenasIdmap(TruenasResource):
+
+    RESOURCE_API_MODEL = 'idmap_domain_create'
+    _RESOURCE_PATH = '/idmap'
+    _RESOURCE_ITEM_PATH = '/idmap/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
 
 

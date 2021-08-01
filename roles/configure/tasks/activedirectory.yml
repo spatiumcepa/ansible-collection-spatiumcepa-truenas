@@ -1,0 +1,6 @@
+---
+- name: ActiveDirectory Configuration via TrueNAS API
+  truenas_api_activedirectory:
+    model: "{{ truenas_config_activedirectory.model }}"
+  register: truenas_api_result_activedirectory_update
+  when: truenas_config_activedirectory is defined

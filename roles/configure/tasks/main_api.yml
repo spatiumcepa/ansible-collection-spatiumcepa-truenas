@@ -107,3 +107,21 @@
   tags:
     - truenas_service
   when: truenas_config_service is defined
+
+- name: Manage ActiveDirectory Configuration
+  include_tasks:
+    file: activedirectory.yml
+    apply:
+      tags:
+        - truenas_activedirectory
+  tags:
+    - truenas_activedirectory
+
+- name: Manage ID Map Configuration
+  include_tasks:
+    file: idmap.yml
+    apply:
+      tags:
+        - truenas_idmap
+  tags:
+    - truenas_idmap

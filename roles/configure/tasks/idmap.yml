@@ -1,0 +1,9 @@
+---
+- name: Manage ID Map Items
+  truenas_api_idmap:
+    model: "{{ idmap_item.model }}"
+  register: truenas_api_result_idmap_item_update
+  with_items: "{{ truenas_config_idmap }}"
+  loop_control:
+    loop_var: idmap_item
+  when: truenas_config_idmap is defined

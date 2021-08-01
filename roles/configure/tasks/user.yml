@@ -10,7 +10,7 @@
   truenas_api_user:
     model: "{{ user_item.model }}"
     state: "{{ user_item.state | default(omit) }}"
-  register: truenas_api_result_user_update
+  register: truenas_api_result_user_item_update
   with_items: "{{ truenas_config_user }}"
   loop_control:
     loop_var: user_item

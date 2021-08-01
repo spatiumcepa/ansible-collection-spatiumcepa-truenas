@@ -9,23 +9,103 @@ def strip_null_module_params(params):
 
 
 API_ARG_SPECS = {
+    "alert_service_create": {
+        "type": "dict",
+        "options": {
+            "name": {
+                "type": "str"
+            },
+            "type": {
+                "type": "str"
+            },
+            "attributes": {
+                "type": "dict",
+                "suboptions": {}
+            },
+            "level": {
+                "type": "str",
+                "choices": [
+                    "INFO",
+                    "NOTICE",
+                    "WARNING",
+                    "ERROR",
+                    "CRITICAL",
+                    "ALERT",
+                    "EMERGENCY"
+                ]
+            },
+            "enabled": {
+                "type": "bool"
+            }
+        }
+    },
+    "group_create": {
+        "type": "dict",
+        "options": {
+            "gid": {
+                "type": "int"
+            },
+            "name": {
+                "type": "str"
+            },
+            "smb": {
+                "type": "bool"
+            },
+            "sudo": {
+                "type": "bool"
+            },
+            "sudo_nopasswd": {
+                "type": "bool"
+            },
+            "sudo_commands": {
+                "type": "list"
+            },
+            "allow_duplicate_gid": {
+                "type": "bool"
+            },
+            "users": {
+                "type": "list"
+            }
+        }
+    },
     "interface_create": {
         "type": "dict",
         "options": {
-            "aliases": {
-                "type": "list"
-            },
-            "failover_aliases": {
-                "type": "list"
-            },
-            "vlan_parent_interface": {
+            "name": {
                 "type": "str"
             },
             "description": {
                 "type": "str"
             },
+            "disable_offload_capabilities": {
+                "type": "bool"
+            },
             "ipv4_dhcp": {
                 "type": "bool"
+            },
+            "ipv6_auto": {
+                "type": "bool"
+            },
+            "aliases": {
+                "type": "list"
+            },
+            "failover_critical": {
+                "type": "bool"
+            },
+            "failover_group": {
+                "type": "int"
+            },
+            "failover_vhid": {
+                "type": "int"
+            },
+            "failover_aliases": {
+                "type": "list"
+            },
+            "failover_virtual_aliases": {
+                "type": "list"
+            },
+            "bridge_members": {
+                "type": "list"
             },
             "lag_protocol": {
                 "type": "str",
@@ -37,87 +117,51 @@ API_ARG_SPECS = {
                     "NONE"
                 ]
             },
-            "failover_critical": {
-                "type": "bool"
-            },
-            "failover_group": {
-                "type": "int"
-            },
-            "failover_virtual_aliases": {
+            "lag_ports": {
                 "type": "list"
             },
-            "failover_vhid": {
-                "type": "int"
-            },
-            "ipv6_auto": {
-                "type": "bool"
-            },
-            "disable_offload_capabilities": {
-                "type": "bool"
-            },
-            "vlan_pcp": {
-                "type": "int"
-            },
-            "bridge_members": {
-                "type": "list"
+            "vlan_parent_interface": {
+                "type": "str"
             },
             "vlan_tag": {
+                "type": "int"
+            },
+            "vlan_pcp": {
                 "type": "int"
             },
             "mtu": {
                 "type": "int"
             },
-            "lag_ports": {
-                "type": "list"
-            },
             "options": {
                 "type": "str"
-            },
-            "name": {
-                "type": "str"
-            }
-        }
-    },
-    "ntp_create": {
-        "type": "dict",
-        "options": {
-            "maxpoll": {
-                "type": "int"
-            },
-            "force": {
-                "type": "bool"
-            },
-            "burst": {
-                "type": "bool"
-            },
-            "prefer": {
-                "type": "bool"
-            },
-            "iburst": {
-                "type": "bool"
-            },
-            "address": {
-                "type": "str"
-            },
-            "minpoll": {
-                "type": "int"
             }
         }
     },
     "mail_update": {
         "type": "dict",
         "options": {
-            "fromname": {
+            "fromemail": {
                 "type": "str"
             },
-            "smtp": {
-                "type": "bool"
+            "fromname": {
+                "type": "str"
             },
             "outgoingserver": {
                 "type": "str"
             },
-            "fromemail": {
-                "type": "str"
+            "port": {
+                "type": "int"
+            },
+            "security": {
+                "type": "str",
+                "choices": [
+                    "PLAIN",
+                    "SSL",
+                    "TLS"
+                ]
+            },
+            "smtp": {
+                "type": "bool"
             },
             "user": {
                 "type": "str"
@@ -128,116 +172,76 @@ API_ARG_SPECS = {
             "oauth": {
                 "type": "dict",
                 "suboptions": {
-                    "client_secret": {
+                    "client_id": {
                         "type": "str"
                     },
-                    "client_id": {
+                    "client_secret": {
                         "type": "str"
                     },
                     "refresh_token": {
                         "type": "str"
                     }
                 }
-            },
-            "security": {
-                "type": "str",
-                "choices": [
-                    "PLAIN",
-                    "SSL",
-                    "TLS"
-                ]
-            },
-            "port": {
-                "type": "int"
-            }
-        }
-    },
-    "group_create": {
-        "type": "dict",
-        "options": {
-            "name": {
-                "type": "str"
-            },
-            "sudo": {
-                "type": "bool"
-            },
-            "gid": {
-                "type": "int"
-            },
-            "sudo_nopasswd": {
-                "type": "bool"
-            },
-            "allow_duplicate_gid": {
-                "type": "bool"
-            },
-            "sudo_commands": {
-                "type": "list"
-            },
-            "smb": {
-                "type": "bool"
-            },
-            "users": {
-                "type": "list"
             }
         }
     },
     "global_configuration_update": {
         "type": "dict",
         "options": {
-            "netwait_ip": {
-                "type": "list"
-            },
-            "domain": {
-                "type": "str"
-            },
-            "nameserver3": {
-                "type": "str"
-            },
-            "nameserver2": {
+            "hostname": {
                 "type": "str"
             },
             "hostname_b": {
                 "type": "str"
             },
-            "hostname": {
-                "type": "str"
-            },
-            "service_announcement": {
-                "type": "dict",
-                "suboptions": {
-                    "mdns": {
-                        "type": "bool"
-                    },
-                    "wsd": {
-                        "type": "bool"
-                    },
-                    "netbios": {
-                        "type": "bool"
-                    }
-                }
-            },
             "hostname_virtual": {
                 "type": "str"
             },
-            "hosts": {
+            "domain": {
                 "type": "str"
             },
             "domains": {
                 "type": "list"
             },
-            "httpproxy": {
-                "type": "str"
+            "service_announcement": {
+                "type": "dict",
+                "suboptions": {
+                    "netbios": {
+                        "type": "bool"
+                    },
+                    "mdns": {
+                        "type": "bool"
+                    },
+                    "wsd": {
+                        "type": "bool"
+                    }
+                }
             },
             "ipv4gateway": {
                 "type": "str"
-            },
-            "netwait_enabled": {
-                "type": "bool"
             },
             "ipv6gateway": {
                 "type": "str"
             },
             "nameserver1": {
+                "type": "str"
+            },
+            "nameserver2": {
+                "type": "str"
+            },
+            "nameserver3": {
+                "type": "str"
+            },
+            "httpproxy": {
+                "type": "str"
+            },
+            "netwait_enabled": {
+                "type": "bool"
+            },
+            "netwait_ip": {
+                "type": "list"
+            },
+            "hosts": {
                 "type": "str"
             }
         }
@@ -245,54 +249,37 @@ API_ARG_SPECS = {
     "system_advanced_update": {
         "type": "dict",
         "options": {
-            "sysloglevel": {
-                "type": "str",
-                "choices": [
-                    "F_EMERG",
-                    "F_ALERT",
-                    "F_CRIT",
-                    "F_ERR",
-                    "F_WARNING",
-                    "F_NOTICE",
-                    "F_INFO",
-                    "F_DEBUG",
-                    "F_IS_DEBUG"
-                ]
+            "advancedmode": {
+                "type": "bool"
             },
-            "serialport": {
-                "type": "str"
+            "autotune": {
+                "type": "bool"
+            },
+            "boot_scrub": {
+                "type": "int"
+            },
+            "consolemenu": {
+                "type": "bool"
             },
             "consolemsg": {
+                "type": "bool"
+            },
+            "debugkernel": {
+                "type": "bool"
+            },
+            "fqdn_syslog": {
                 "type": "bool"
             },
             "motd": {
                 "type": "str"
             },
-            "swapondrive": {
-                "type": "int"
-            },
-            "sed_user": {
-                "type": "str",
-                "choices": [
-                    "USER",
-                    "MASTER"
-                ]
-            },
-            "syslog_transport": {
-                "type": "str",
-                "choices": [
-                    "UDP",
-                    "TCP",
-                    "TLS"
-                ]
-            },
-            "sed_passwd": {
-                "type": "str"
-            },
-            "advancedmode": {
+            "powerdaemon": {
                 "type": "bool"
             },
-            "syslogserver": {
+            "serialconsole": {
+                "type": "bool"
+            },
+            "serialport": {
                 "type": "str"
             },
             "serialspeed": {
@@ -305,49 +292,30 @@ API_ARG_SPECS = {
                     "115200"
                 ]
             },
-            "consolemenu": {
-                "type": "bool"
+            "swapondrive": {
+                "type": "int"
             },
-            "anonstats": {
-                "type": "bool"
-            },
-            "uploadcrash": {
-                "type": "bool"
-            },
-            "serialconsole": {
-                "type": "bool"
-            },
-            "fqdn_syslog": {
-                "type": "bool"
-            },
-            "powerdaemon": {
-                "type": "bool"
-            },
-            "debugkernel": {
-                "type": "bool"
-            },
-            "boot_scrub": {
+            "overprovision": {
                 "type": "int"
             },
             "traceback": {
                 "type": "bool"
             },
-            "overprovision": {
-                "type": "int"
-            },
-            "autotune": {
+            "uploadcrash": {
                 "type": "bool"
             },
-            "syslog_tls_certificate": {
-                "type": "int"
-            }
-        }
-    },
-    "general_settings": {
-        "type": "dict",
-        "options": {
-            "ui_httpsport": {
-                "type": "int"
+            "anonstats": {
+                "type": "bool"
+            },
+            "sed_user": {
+                "type": "str",
+                "choices": [
+                    "USER",
+                    "MASTER"
+                ]
+            },
+            "sed_passwd": {
+                "type": "str"
             },
             "sysloglevel": {
                 "type": "str",
@@ -363,40 +331,102 @@ API_ARG_SPECS = {
                     "F_IS_DEBUG"
                 ]
             },
-            "language": {
+            "syslogserver": {
                 "type": "str"
+            },
+            "syslog_transport": {
+                "type": "str",
+                "choices": [
+                    "UDP",
+                    "TCP",
+                    "TLS"
+                ]
+            },
+            "syslog_tls_certificate": {
+                "type": "int"
+            }
+        }
+    },
+    "general_settings": {
+        "type": "dict",
+        "options": {
+            "ui_certificate": {
+                "type": "int"
+            },
+            "ui_httpsport": {
+                "type": "int"
+            },
+            "ui_httpsredirect": {
+                "type": "bool"
+            },
+            "ui_httpsprotocols": {
+                "type": "list"
             },
             "ui_port": {
                 "type": "int"
             },
-            "ui_certificate": {
-                "type": "int"
+            "ui_address": {
+                "type": "list"
             },
-            "ui_httpsprotocols": {
+            "ui_v6address": {
                 "type": "list"
             },
             "kbdmap": {
                 "type": "str"
             },
-            "crash_reporting": {
-                "type": "bool"
-            },
-            "ui_v6address": {
-                "type": "list"
-            },
-            "timezone": {
+            "language": {
                 "type": "str"
+            },
+            "sysloglevel": {
+                "type": "str",
+                "choices": [
+                    "F_EMERG",
+                    "F_ALERT",
+                    "F_CRIT",
+                    "F_ERR",
+                    "F_WARNING",
+                    "F_NOTICE",
+                    "F_INFO",
+                    "F_DEBUG",
+                    "F_IS_DEBUG"
+                ]
             },
             "syslogserver": {
                 "type": "str"
             },
-            "ui_httpsredirect": {
+            "timezone": {
+                "type": "str"
+            },
+            "crash_reporting": {
                 "type": "bool"
             },
-            "ui_address": {
-                "type": "list"
-            },
             "usage_collection": {
+                "type": "bool"
+            }
+        }
+    },
+    "ntp_create": {
+        "type": "dict",
+        "options": {
+            "address": {
+                "type": "str"
+            },
+            "burst": {
+                "type": "bool"
+            },
+            "iburst": {
+                "type": "bool"
+            },
+            "prefer": {
+                "type": "bool"
+            },
+            "minpoll": {
+                "type": "int"
+            },
+            "maxpoll": {
+                "type": "int"
+            },
+            "force": {
                 "type": "bool"
             }
         }
@@ -404,35 +434,26 @@ API_ARG_SPECS = {
     "user_create": {
         "type": "dict",
         "options": {
+            "uid": {
+                "type": "int"
+            },
             "username": {
-                "type": "str"
-            },
-            "sshpubkey": {
-                "type": "str"
-            },
-            "password": {
-                "type": "str"
-            },
-            "shell": {
                 "type": "str"
             },
             "group": {
                 "type": "int"
             },
-            "uid": {
-                "type": "int"
-            },
-            "microsoft_account": {
+            "group_create": {
                 "type": "bool"
             },
             "home": {
                 "type": "str"
             },
-            "sudo": {
-                "type": "bool"
+            "home_mode": {
+                "type": "str"
             },
-            "group_create": {
-                "type": "bool"
+            "shell": {
+                "type": "str"
             },
             "full_name": {
                 "type": "str"
@@ -440,30 +461,39 @@ API_ARG_SPECS = {
             "email": {
                 "type": "str"
             },
-            "home_mode": {
+            "password": {
                 "type": "str"
             },
-            "sudo_nopasswd": {
+            "password_disabled": {
                 "type": "bool"
-            },
-            "groups": {
-                "type": "list"
-            },
-            "sudo_commands": {
-                "type": "list"
             },
             "locked": {
                 "type": "bool"
             },
-            "attributes": {
-                "type": "dict",
-                "suboptions": {}
+            "microsoft_account": {
+                "type": "bool"
             },
             "smb": {
                 "type": "bool"
             },
-            "password_disabled": {
+            "sudo": {
                 "type": "bool"
+            },
+            "sudo_nopasswd": {
+                "type": "bool"
+            },
+            "sudo_commands": {
+                "type": "list"
+            },
+            "sshpubkey": {
+                "type": "str"
+            },
+            "groups": {
+                "type": "list"
+            },
+            "attributes": {
+                "type": "dict",
+                "suboptions": {}
             }
         }
     }

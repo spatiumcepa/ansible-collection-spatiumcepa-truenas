@@ -118,7 +118,8 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasInterface.RESOURCE_API_MODEL]
+            model=API_ARG_SPECS[TruenasInterface.RESOURCE_API_MODEL],
+            #state={'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'}
         ),
         supports_check_mode=True,
     )
@@ -129,7 +130,9 @@ def main():
     try:
         response = None
         model_param = strip_null_module_params(module.params['model'])
-        state_param = module.params['state']
+        # TODO: allow state definition for interfaces?
+        state_param = "present"
+        #state_param = module.params['state']
 
         if state_param == 'present':
             response = interface_resource.update_item(model_param)

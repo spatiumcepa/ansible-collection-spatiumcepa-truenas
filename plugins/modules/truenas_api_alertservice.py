@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasSystemNtpserver
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasAlertservice
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS, strip_null_module_params
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.basic import AnsibleModule
@@ -15,12 +15,12 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
-module: truenas_api_system_ntpserver
+module: truenas_api_alertservice
 
-short_description: Manage TrueNAS Groups
+short_description: Manage TrueNAS Alertservices
 
 description:
-  - Manage TrueNAS Groups via REST API
+  - Manage TrueNAS Alertservices via REST API
 
 version_added: "2.10"
 
@@ -29,7 +29,7 @@ author: Nicholas Kiraly (@nkiraly)
 options:
   state:
     type: str
-    description: Desired state of the ntpserver
+    description: Desired state of the alertservice
     default: present
     choices: [ absent, present ]
   model:
@@ -40,69 +40,37 @@ options:
         description: ''
         suboptions: {}
         type: dict
-      email:
-        description: ''
-        type: str
-      full_name:
-        description: ''
-        type: str
-      group:
-        description: ''
-        type: int
-      groups:
-        description: ''
-        type: list
-      home:
-        description: ''
-        type: str
-      home_mode:
-        description: ''
-        type: str
-      locked:
+      enabled:
         description: ''
         type: bool
-      microsoft_account:
-        description: ''
-        type: bool
-      password:
-        description: ''
-        type: str
-      password_disabled:
-        description: ''
-        type: bool
-      shell:
-        description: ''
-        type: str
-      smb:
-        description: ''
-        type: bool
-      sshpubkey:
+      level:
+        choices:
+        - INFO
+        - NOTICE
+        - WARNING
+        - ERROR
+        - CRITICAL
+        - ALERT
+        - EMERGENCY
         description: ''
         type: str
-      sudo:
+      name:
         description: ''
-        type: bool
-      sudo_commands:
-        description: ''
-        type: list
-      sudo_nopasswd:
-        description: ''
-        type: bool
-      uid:
-        description: ''
-        type: int
-      username:
+        type: str
+      type:
         description: ''
         type: str
 """
 
 EXAMPLES = """
-  - name: Manage NTPServer via TrueNAS API
-    spatiumcepa.truenas.truenas_api_system_ntpserver:
+  - name: Alertservice Configuration via TrueNAS API
+    spatiumcepa.truenas.truenas_api_alertservice:
       model:
-        address: hq2-dc01.corp.vicarious.com
-        prefer: true
-      state: present
+        name: E-Mail
+        enabled: true
+        level: WARNING
+        attributes:
+          email: truenas@spatium-cepa.com
 """
 
 RETURN = """
@@ -116,14 +84,14 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasSystemNtpserver.RESOURCE_API_MODEL],
+            model=API_ARG_SPECS[TruenasAlertservice.RESOURCE_API_MODEL],
             state={'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'}
         ),
         supports_check_mode=True,
     )
 
     connection = Connection(module._socket_path)
-    ntpserver_resource = TruenasSystemNtpserver(connection, module.check_mode)
+    alertservice_resource = TruenasAlertservice(connection, module.check_mode)
 
     try:
         response = None
@@ -131,16 +99,16 @@ def main():
         state_param = module.params['state']
 
         if state_param == 'present':
-            response = ntpserver_resource.update_item(model_param)
+            response = alertservice_resource.update_item(model_param)
             failed = response[HTTPResponse.STATUS_CODE] != HTTPCode.OK
         elif state_param == 'absent':
-            response = ntpserver_resource.delete_item(model_param)
+            response = alertservice_resource.delete_item(model_param)
             failed = response[HTTPResponse.STATUS_CODE] not in [HTTPCode.OK, HTTPCode.NOT_FOUND]
 
         module.exit_json(
-            created=ntpserver_resource.resource_created,
-            changed=ntpserver_resource.resource_changed,
-            deleted=ntpserver_resource.resource_deleted,
+            created=alertservice_resource.resource_created,
+            changed=alertservice_resource.resource_changed,
+            deleted=alertservice_resource.resource_deleted,
             failed=failed,
             response=response,
             submitted_model=model_param,

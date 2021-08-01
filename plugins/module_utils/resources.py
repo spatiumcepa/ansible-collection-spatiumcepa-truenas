@@ -190,6 +190,14 @@ class TruenasGroup(TruenasResource):
         return has_changes
 
 
+class TruenasAlertservice(TruenasResource):
+
+    RESOURCE_API_MODEL = 'alert_service_create'
+    _RESOURCE_PATH = '/alertservice'
+    _RESOURCE_ITEM_PATH = '/alertservice/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'name'
+
+
 class TruenasInterface(TruenasResource):
 
     RESOURCE_API_MODEL = 'interface_create'

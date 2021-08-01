@@ -87,3 +87,13 @@
   tags:
     - truenas_system
     - truenas_system_ntpserver
+
+- name: Manage Alertservice Configuration
+  include_tasks:
+    file: alertservice.yml
+    apply:
+      tags:
+        - truenas_alertservice
+  tags:
+    - truenas_alertservice
+  when: truenas_config_alertservice is defined

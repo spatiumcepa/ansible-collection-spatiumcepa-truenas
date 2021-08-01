@@ -1,0 +1,9 @@
+---
+- name: Alertservice Item Configuration via TrueNAS API
+  truenas_api_alertservice:
+    model: "{{ alertservice_item.model }}"
+  register: truenas_api_result_alertservice_item_update
+  with_items: "{{ truenas_config_alertservice }}"
+  loop_control:
+    loop_var: alertservice_item
+  when: truenas_config_alertservice is defined

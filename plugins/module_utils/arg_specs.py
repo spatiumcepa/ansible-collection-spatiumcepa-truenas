@@ -9,285 +9,23 @@ def strip_null_module_params(params):
 
 
 API_ARG_SPECS = {
-    "activedirectory_update": {
-        "type": "dict",
-        "options": {
-            "domainname": {
-                "type": "str"
-            },
-            "bindname": {
-                "type": "str"
-            },
-            "bindpw": {
-                "type": "str"
-            },
-            "verbose_logging": {
-                "type": "bool"
-            },
-            "use_default_domain": {
-                "type": "bool"
-            },
-            "allow_trusted_doms": {
-                "type": "bool"
-            },
-            "allow_dns_updates": {
-                "type": "bool"
-            },
-            "disable_freenas_cache": {
-                "type": "bool"
-            },
-            "restrict_pam": {
-                "type": "bool"
-            },
-            "site": {
-                "type": "str"
-            },
-            "kerberos_realm": {
-                "type": "int"
-            },
-            "kerberos_principal": {
-                "type": "str"
-            },
-            "timeout": {
-                "type": "int"
-            },
-            "dns_timeout": {
-                "type": "int"
-            },
-            "nss_info": {
-                "type": "str",
-                "choices": [
-                    "SFU",
-                    "SFU20",
-                    "RFC2307"
-                ]
-            },
-            "createcomputer": {
-                "type": "str"
-            },
-            "netbiosname": {
-                "type": "str"
-            },
-            "netbiosname_b": {
-                "type": "str"
-            },
-            "netbiosalias": {
-                "type": "list"
-            },
-            "enable": {
-                "type": "bool"
-            }
-        }
-    },
-    "alert_service_create": {
-        "type": "dict",
-        "options": {
-            "name": {
-                "type": "str"
-            },
-            "type": {
-                "type": "str"
-            },
-            "attributes": {
-                "type": "dict",
-                "suboptions": {}
-            },
-            "level": {
-                "type": "str",
-                "choices": [
-                    "INFO",
-                    "NOTICE",
-                    "WARNING",
-                    "ERROR",
-                    "CRITICAL",
-                    "ALERT",
-                    "EMERGENCY"
-                ]
-            },
-            "enabled": {
-                "type": "bool"
-            }
-        }
-    },
-    "group_create": {
-        "type": "dict",
-        "options": {
-            "gid": {
-                "type": "int"
-            },
-            "name": {
-                "type": "str"
-            },
-            "smb": {
-                "type": "bool"
-            },
-            "sudo": {
-                "type": "bool"
-            },
-            "sudo_nopasswd": {
-                "type": "bool"
-            },
-            "sudo_commands": {
-                "type": "list"
-            },
-            "allow_duplicate_gid": {
-                "type": "bool"
-            },
-            "users": {
-                "type": "list"
-            }
-        }
-    },
-    "idmap_domain_create": {
-        "type": "dict",
-        "options": {
-            "name": {
-                "type": "str"
-            },
-            "dns_domain_name": {
-                "type": "str"
-            },
-            "range_low": {
-                "type": "int"
-            },
-            "range_high": {
-                "type": "int"
-            },
-            "idmap_backend": {
-                "type": "str",
-                "choices": [
-                    "AD",
-                    "AUTORID",
-                    "LDAP",
-                    "NSS",
-                    "RFC2307",
-                    "RID",
-                    "TDB"
-                ]
-            },
-            "certificate": {
-                "type": "int"
-            },
-            "options": {
-                "type": "dict",
-                "suboptions": {
-                    "schema_mode": {
-                        "type": "str",
-                        "choices": [
-                            "RFC2307",
-                            "SFU",
-                            "SFU20"
-                        ]
-                    },
-                    "unix_primary_group": {
-                        "type": "bool"
-                    },
-                    "unix_nss_info": {
-                        "type": "bool"
-                    },
-                    "rangesize": {
-                        "type": "int"
-                    },
-                    "readonly": {
-                        "type": "bool"
-                    },
-                    "ignore_builtin": {
-                        "type": "bool"
-                    },
-                    "ldap_base_dn": {
-                        "type": "str"
-                    },
-                    "ldap_user_dn": {
-                        "type": "str"
-                    },
-                    "ldap_user_dn_password": {
-                        "type": "str"
-                    },
-                    "ldap_url": {
-                        "type": "str"
-                    },
-                    "ssl": {
-                        "type": "str",
-                        "choices": [
-                            "OFF",
-                            "ON",
-                            "START_TLS"
-                        ]
-                    },
-                    "linked_service": {
-                        "type": "str",
-                        "choices": [
-                            "LOCAL_ACCOUNT",
-                            "LDAP",
-                            "NIS"
-                        ]
-                    },
-                    "ldap_server": {
-                        "type": "str"
-                    },
-                    "ldap_realm": {
-                        "type": "bool"
-                    },
-                    "bind_path_user": {
-                        "type": "str"
-                    },
-                    "bind_path_group": {
-                        "type": "str"
-                    },
-                    "user_cn": {
-                        "type": "bool"
-                    },
-                    "cn_realm": {
-                        "type": "str"
-                    },
-                    "ldap_domain": {
-                        "type": "str"
-                    },
-                    "sssd_compat": {
-                        "type": "bool"
-                    }
-                }
-            }
-        }
-    },
     "interface_create": {
         "type": "dict",
         "options": {
-            "name": {
+            "aliases": {
+                "type": "list"
+            },
+            "failover_aliases": {
+                "type": "list"
+            },
+            "vlan_parent_interface": {
                 "type": "str"
             },
             "description": {
                 "type": "str"
             },
-            "disable_offload_capabilities": {
-                "type": "bool"
-            },
             "ipv4_dhcp": {
                 "type": "bool"
-            },
-            "ipv6_auto": {
-                "type": "bool"
-            },
-            "aliases": {
-                "type": "list"
-            },
-            "failover_critical": {
-                "type": "bool"
-            },
-            "failover_group": {
-                "type": "int"
-            },
-            "failover_vhid": {
-                "type": "int"
-            },
-            "failover_aliases": {
-                "type": "list"
-            },
-            "failover_virtual_aliases": {
-                "type": "list"
-            },
-            "bridge_members": {
-                "type": "list"
             },
             "lag_protocol": {
                 "type": "str",
@@ -299,205 +37,64 @@ API_ARG_SPECS = {
                     "NONE"
                 ]
             },
-            "lag_ports": {
-                "type": "list"
+            "failover_critical": {
+                "type": "bool"
             },
-            "vlan_parent_interface": {
-                "type": "str"
-            },
-            "vlan_tag": {
+            "failover_group": {
                 "type": "int"
             },
+            "failover_virtual_aliases": {
+                "type": "list"
+            },
+            "failover_vhid": {
+                "type": "int"
+            },
+            "ipv6_auto": {
+                "type": "bool"
+            },
+            "disable_offload_capabilities": {
+                "type": "bool"
+            },
             "vlan_pcp": {
+                "type": "int"
+            },
+            "bridge_members": {
+                "type": "list"
+            },
+            "vlan_tag": {
                 "type": "int"
             },
             "mtu": {
                 "type": "int"
             },
+            "lag_ports": {
+                "type": "list"
+            },
             "options": {
                 "type": "str"
-            }
-        }
-    },
-    "mail_update": {
-        "type": "dict",
-        "options": {
-            "fromemail": {
+            },
+            "name": {
                 "type": "str"
-            },
-            "fromname": {
-                "type": "str"
-            },
-            "outgoingserver": {
-                "type": "str"
-            },
-            "port": {
-                "type": "int"
-            },
-            "security": {
-                "type": "str",
-                "choices": [
-                    "PLAIN",
-                    "SSL",
-                    "TLS"
-                ]
-            },
-            "smtp": {
-                "type": "bool"
-            },
-            "user": {
-                "type": "str"
-            },
-            "pass": {
-                "type": "str"
-            },
-            "oauth": {
-                "type": "dict",
-                "suboptions": {
-                    "client_id": {
-                        "type": "str"
-                    },
-                    "client_secret": {
-                        "type": "str"
-                    },
-                    "refresh_token": {
-                        "type": "str"
-                    }
-                }
-            }
-        }
-    },
-    "global_configuration_update": {
-        "type": "dict",
-        "options": {
-            "hostname": {
-                "type": "str"
-            },
-            "hostname_b": {
-                "type": "str"
-            },
-            "hostname_virtual": {
-                "type": "str"
-            },
-            "domain": {
-                "type": "str"
-            },
-            "domains": {
-                "type": "list"
-            },
-            "service_announcement": {
-                "type": "dict",
-                "suboptions": {
-                    "netbios": {
-                        "type": "bool"
-                    },
-                    "mdns": {
-                        "type": "bool"
-                    },
-                    "wsd": {
-                        "type": "bool"
-                    }
-                }
-            },
-            "ipv4gateway": {
-                "type": "str"
-            },
-            "ipv6gateway": {
-                "type": "str"
-            },
-            "nameserver1": {
-                "type": "str"
-            },
-            "nameserver2": {
-                "type": "str"
-            },
-            "nameserver3": {
-                "type": "str"
-            },
-            "httpproxy": {
-                "type": "str"
-            },
-            "netwait_enabled": {
-                "type": "bool"
-            },
-            "netwait_ip": {
-                "type": "list"
-            },
-            "hosts": {
-                "type": "str"
-            }
-        }
-    },
-    "nfs_update": {
-        "type": "dict",
-        "options": {
-            "servers": {
-                "type": "int"
-            },
-            "udp": {
-                "type": "bool"
-            },
-            "allow_nonroot": {
-                "type": "bool"
-            },
-            "v4": {
-                "type": "bool"
-            },
-            "v4_v3owner": {
-                "type": "bool"
-            },
-            "v4_krb": {
-                "type": "bool"
-            },
-            "v4_domain": {
-                "type": "str"
-            },
-            "bindip": {
-                "type": "list"
-            },
-            "mountd_port": {
-                "type": "int"
-            },
-            "rpcstatd_port": {
-                "type": "int"
-            },
-            "rpclockd_port": {
-                "type": "int"
-            },
-            "userd_manage_gids": {
-                "type": "bool"
-            },
-            "mountd_log": {
-                "type": "bool"
-            },
-            "statd_lockd_log": {
-                "type": "bool"
             }
         }
     },
     "smb_update": {
         "type": "dict",
         "options": {
+            "unixcharset": {
+                "type": "str"
+            },
             "netbiosname": {
                 "type": "str"
             },
-            "netbiosname_b": {
-                "type": "str"
-            },
-            "netbiosalias": {
-                "type": "list"
+            "aapl_extensions": {
+                "type": "bool"
             },
             "workgroup": {
                 "type": "str"
             },
-            "description": {
-                "type": "str"
-            },
-            "enable_smb1": {
+            "ntlmv1_auth": {
                 "type": "bool"
-            },
-            "unixcharset": {
-                "type": "str"
             },
             "loglevel": {
                 "type": "str",
@@ -509,76 +106,121 @@ API_ARG_SPECS = {
                     "DEBUG"
                 ]
             },
-            "syslog": {
-                "type": "bool"
+            "filemask": {
+                "type": "str"
             },
-            "aapl_extensions": {
-                "type": "bool"
-            },
-            "localmaster": {
-                "type": "bool"
-            },
-            "guest": {
+            "description": {
                 "type": "str"
             },
             "admin_group": {
                 "type": "str"
             },
-            "filemask": {
+            "enable_smb1": {
+                "type": "bool"
+            },
+            "syslog": {
+                "type": "bool"
+            },
+            "smb_options": {
                 "type": "str"
+            },
+            "netbiosalias": {
+                "type": "list"
             },
             "dirmask": {
                 "type": "str"
             },
-            "ntlmv1_auth": {
+            "localmaster": {
                 "type": "bool"
             },
             "bindip": {
                 "type": "list"
             },
-            "smb_options": {
+            "netbiosname_b": {
                 "type": "str"
+            },
+            "guest": {
+                "type": "str"
+            }
+        }
+    },
+    "ntp_create": {
+        "type": "dict",
+        "options": {
+            "maxpoll": {
+                "type": "int"
+            },
+            "force": {
+                "type": "bool"
+            },
+            "burst": {
+                "type": "bool"
+            },
+            "prefer": {
+                "type": "bool"
+            },
+            "iburst": {
+                "type": "bool"
+            },
+            "address": {
+                "type": "str"
+            },
+            "minpoll": {
+                "type": "int"
+            }
+        }
+    },
+    "mail_update": {
+        "type": "dict",
+        "options": {
+            "fromname": {
+                "type": "str"
+            },
+            "smtp": {
+                "type": "bool"
+            },
+            "outgoingserver": {
+                "type": "str"
+            },
+            "fromemail": {
+                "type": "str"
+            },
+            "user": {
+                "type": "str"
+            },
+            "pass": {
+                "type": "str"
+            },
+            "oauth": {
+                "type": "dict",
+                "suboptions": {
+                    "client_secret": {
+                        "type": "str"
+                    },
+                    "client_id": {
+                        "type": "str"
+                    },
+                    "refresh_token": {
+                        "type": "str"
+                    }
+                }
+            },
+            "security": {
+                "type": "str",
+                "choices": [
+                    "PLAIN",
+                    "SSL",
+                    "TLS"
+                ]
+            },
+            "port": {
+                "type": "int"
             }
         }
     },
     "ssh_update": {
         "type": "dict",
         "options": {
-            "bindiface": {
-                "type": "list"
-            },
-            "tcpport": {
-                "type": "int"
-            },
-            "rootlogin": {
-                "type": "bool"
-            },
-            "passwordauth": {
-                "type": "bool"
-            },
-            "kerberosauth": {
-                "type": "bool"
-            },
-            "tcpfwd": {
-                "type": "bool"
-            },
-            "compression": {
-                "type": "bool"
-            },
-            "sftp_log_level": {
-                "type": "str",
-                "choices": [
-                    "",
-                    "QUIET",
-                    "FATAL",
-                    "ERROR",
-                    "INFO",
-                    "VERBOSE",
-                    "DEBUG",
-                    "DEBUG2",
-                    "DEBUG3"
-                ]
-            },
             "sftp_log_facility": {
                 "type": "str",
                 "choices": [
@@ -596,10 +238,193 @@ API_ARG_SPECS = {
                     "LOCAL7"
                 ]
             },
+            "compression": {
+                "type": "bool"
+            },
+            "bindiface": {
+                "type": "list"
+            },
+            "sftp_log_level": {
+                "type": "str",
+                "choices": [
+                    "",
+                    "QUIET",
+                    "FATAL",
+                    "ERROR",
+                    "INFO",
+                    "VERBOSE",
+                    "DEBUG",
+                    "DEBUG2",
+                    "DEBUG3"
+                ]
+            },
+            "passwordauth": {
+                "type": "bool"
+            },
+            "rootlogin": {
+                "type": "bool"
+            },
+            "kerberosauth": {
+                "type": "bool"
+            },
             "weak_ciphers": {
                 "type": "list"
             },
+            "tcpport": {
+                "type": "int"
+            },
             "options": {
+                "type": "str"
+            },
+            "tcpfwd": {
+                "type": "bool"
+            }
+        }
+    },
+    "group_create": {
+        "type": "dict",
+        "options": {
+            "name": {
+                "type": "str"
+            },
+            "sudo": {
+                "type": "bool"
+            },
+            "gid": {
+                "type": "int"
+            },
+            "sudo_nopasswd": {
+                "type": "bool"
+            },
+            "allow_duplicate_gid": {
+                "type": "bool"
+            },
+            "sudo_commands": {
+                "type": "list"
+            },
+            "smb": {
+                "type": "bool"
+            },
+            "users": {
+                "type": "list"
+            }
+        }
+    },
+    "general_settings": {
+        "type": "dict",
+        "options": {
+            "ui_httpsport": {
+                "type": "int"
+            },
+            "sysloglevel": {
+                "type": "str",
+                "choices": [
+                    "F_EMERG",
+                    "F_ALERT",
+                    "F_CRIT",
+                    "F_ERR",
+                    "F_WARNING",
+                    "F_NOTICE",
+                    "F_INFO",
+                    "F_DEBUG",
+                    "F_IS_DEBUG"
+                ]
+            },
+            "language": {
+                "type": "str"
+            },
+            "ui_port": {
+                "type": "int"
+            },
+            "ui_certificate": {
+                "type": "int"
+            },
+            "ui_httpsprotocols": {
+                "type": "list"
+            },
+            "kbdmap": {
+                "type": "str"
+            },
+            "crash_reporting": {
+                "type": "bool"
+            },
+            "ui_v6address": {
+                "type": "list"
+            },
+            "timezone": {
+                "type": "str"
+            },
+            "syslogserver": {
+                "type": "str"
+            },
+            "ui_httpsredirect": {
+                "type": "bool"
+            },
+            "ui_address": {
+                "type": "list"
+            },
+            "usage_collection": {
+                "type": "bool"
+            }
+        }
+    },
+    "global_configuration_update": {
+        "type": "dict",
+        "options": {
+            "netwait_ip": {
+                "type": "list"
+            },
+            "domain": {
+                "type": "str"
+            },
+            "nameserver3": {
+                "type": "str"
+            },
+            "nameserver2": {
+                "type": "str"
+            },
+            "hostname_b": {
+                "type": "str"
+            },
+            "hostname": {
+                "type": "str"
+            },
+            "service_announcement": {
+                "type": "dict",
+                "suboptions": {
+                    "mdns": {
+                        "type": "bool"
+                    },
+                    "wsd": {
+                        "type": "bool"
+                    },
+                    "netbios": {
+                        "type": "bool"
+                    }
+                }
+            },
+            "hostname_virtual": {
+                "type": "str"
+            },
+            "hosts": {
+                "type": "str"
+            },
+            "domains": {
+                "type": "list"
+            },
+            "httpproxy": {
+                "type": "str"
+            },
+            "ipv4gateway": {
+                "type": "str"
+            },
+            "netwait_enabled": {
+                "type": "bool"
+            },
+            "ipv6gateway": {
+                "type": "str"
+            },
+            "nameserver1": {
                 "type": "str"
             }
         }
@@ -607,37 +432,54 @@ API_ARG_SPECS = {
     "system_advanced_update": {
         "type": "dict",
         "options": {
-            "advancedmode": {
-                "type": "bool"
+            "sysloglevel": {
+                "type": "str",
+                "choices": [
+                    "F_EMERG",
+                    "F_ALERT",
+                    "F_CRIT",
+                    "F_ERR",
+                    "F_WARNING",
+                    "F_NOTICE",
+                    "F_INFO",
+                    "F_DEBUG",
+                    "F_IS_DEBUG"
+                ]
             },
-            "autotune": {
-                "type": "bool"
-            },
-            "boot_scrub": {
-                "type": "int"
-            },
-            "consolemenu": {
-                "type": "bool"
+            "serialport": {
+                "type": "str"
             },
             "consolemsg": {
-                "type": "bool"
-            },
-            "debugkernel": {
-                "type": "bool"
-            },
-            "fqdn_syslog": {
                 "type": "bool"
             },
             "motd": {
                 "type": "str"
             },
-            "powerdaemon": {
+            "swapondrive": {
+                "type": "int"
+            },
+            "sed_user": {
+                "type": "str",
+                "choices": [
+                    "USER",
+                    "MASTER"
+                ]
+            },
+            "syslog_transport": {
+                "type": "str",
+                "choices": [
+                    "UDP",
+                    "TCP",
+                    "TLS"
+                ]
+            },
+            "sed_passwd": {
+                "type": "str"
+            },
+            "advancedmode": {
                 "type": "bool"
             },
-            "serialconsole": {
-                "type": "bool"
-            },
-            "serialport": {
+            "syslogserver": {
                 "type": "str"
             },
             "serialspeed": {
@@ -650,168 +492,278 @@ API_ARG_SPECS = {
                     "115200"
                 ]
             },
-            "swapondrive": {
-                "type": "int"
-            },
-            "overprovision": {
-                "type": "int"
-            },
-            "traceback": {
-                "type": "bool"
-            },
-            "uploadcrash": {
+            "consolemenu": {
                 "type": "bool"
             },
             "anonstats": {
                 "type": "bool"
             },
-            "sed_user": {
-                "type": "str",
-                "choices": [
-                    "USER",
-                    "MASTER"
-                ]
+            "uploadcrash": {
+                "type": "bool"
             },
-            "sed_passwd": {
-                "type": "str"
+            "serialconsole": {
+                "type": "bool"
             },
-            "sysloglevel": {
-                "type": "str",
-                "choices": [
-                    "F_EMERG",
-                    "F_ALERT",
-                    "F_CRIT",
-                    "F_ERR",
-                    "F_WARNING",
-                    "F_NOTICE",
-                    "F_INFO",
-                    "F_DEBUG",
-                    "F_IS_DEBUG"
-                ]
+            "fqdn_syslog": {
+                "type": "bool"
             },
-            "syslogserver": {
-                "type": "str"
+            "powerdaemon": {
+                "type": "bool"
             },
-            "syslog_transport": {
-                "type": "str",
-                "choices": [
-                    "UDP",
-                    "TCP",
-                    "TLS"
-                ]
+            "debugkernel": {
+                "type": "bool"
+            },
+            "boot_scrub": {
+                "type": "int"
+            },
+            "traceback": {
+                "type": "bool"
+            },
+            "overprovision": {
+                "type": "int"
+            },
+            "autotune": {
+                "type": "bool"
             },
             "syslog_tls_certificate": {
                 "type": "int"
             }
         }
     },
-    "general_settings": {
+    "nfs_update": {
         "type": "dict",
         "options": {
-            "ui_certificate": {
-                "type": "int"
+            "v4_domain": {
+                "type": "str"
             },
-            "ui_httpsport": {
-                "type": "int"
-            },
-            "ui_httpsredirect": {
+            "mountd_log": {
                 "type": "bool"
             },
-            "ui_httpsprotocols": {
-                "type": "list"
-            },
-            "ui_port": {
-                "type": "int"
-            },
-            "ui_address": {
-                "type": "list"
-            },
-            "ui_v6address": {
-                "type": "list"
-            },
-            "kbdmap": {
-                "type": "str"
-            },
-            "language": {
-                "type": "str"
-            },
-            "sysloglevel": {
-                "type": "str",
-                "choices": [
-                    "F_EMERG",
-                    "F_ALERT",
-                    "F_CRIT",
-                    "F_ERR",
-                    "F_WARNING",
-                    "F_NOTICE",
-                    "F_INFO",
-                    "F_DEBUG",
-                    "F_IS_DEBUG"
-                ]
-            },
-            "syslogserver": {
-                "type": "str"
-            },
-            "timezone": {
-                "type": "str"
-            },
-            "crash_reporting": {
+            "udp": {
                 "type": "bool"
             },
-            "usage_collection": {
+            "v4_krb": {
+                "type": "bool"
+            },
+            "v4_v3owner": {
+                "type": "bool"
+            },
+            "bindip": {
+                "type": "list"
+            },
+            "rpcstatd_port": {
+                "type": "int"
+            },
+            "allow_nonroot": {
+                "type": "bool"
+            },
+            "servers": {
+                "type": "int"
+            },
+            "v4": {
+                "type": "bool"
+            },
+            "mountd_port": {
+                "type": "int"
+            },
+            "statd_lockd_log": {
+                "type": "bool"
+            },
+            "userd_manage_gids": {
+                "type": "bool"
+            },
+            "rpclockd_port": {
+                "type": "int"
+            }
+        }
+    },
+    "cron_job_create": {
+        "type": "dict",
+        "options": {
+            "description": {
+                "type": "str"
+            },
+            "stdout": {
+                "type": "bool"
+            },
+            "schedule": {
+                "type": "dict",
+                "suboptions": {
+                    "dom": {
+                        "type": "str"
+                    },
+                    "minute": {
+                        "type": "str"
+                    },
+                    "dow": {
+                        "type": "str"
+                    },
+                    "hour": {
+                        "type": "str"
+                    },
+                    "month": {
+                        "type": "str"
+                    }
+                }
+            },
+            "enabled": {
+                "type": "bool"
+            },
+            "command": {
+                "type": "str"
+            },
+            "user": {
+                "type": "str"
+            },
+            "stderr": {
                 "type": "bool"
             }
         }
     },
-    "ntp_create": {
+    "idmap_domain_create": {
         "type": "dict",
         "options": {
-            "address": {
+            "range_high": {
+                "type": "int"
+            },
+            "name": {
                 "type": "str"
             },
-            "burst": {
-                "type": "bool"
-            },
-            "iburst": {
-                "type": "bool"
-            },
-            "prefer": {
-                "type": "bool"
-            },
-            "minpoll": {
+            "certificate": {
                 "type": "int"
             },
-            "maxpoll": {
-                "type": "int"
+            "dns_domain_name": {
+                "type": "str"
             },
-            "force": {
-                "type": "bool"
+            "idmap_backend": {
+                "type": "str",
+                "choices": [
+                    "AD",
+                    "AUTORID",
+                    "LDAP",
+                    "NSS",
+                    "RFC2307",
+                    "RID",
+                    "TDB"
+                ]
+            },
+            "options": {
+                "type": "dict",
+                "suboptions": {
+                    "unix_nss_info": {
+                        "type": "bool"
+                    },
+                    "linked_service": {
+                        "type": "str",
+                        "choices": [
+                            "LOCAL_ACCOUNT",
+                            "LDAP",
+                            "NIS"
+                        ]
+                    },
+                    "ldap_user_dn": {
+                        "type": "str"
+                    },
+                    "ldap_url": {
+                        "type": "str"
+                    },
+                    "ignore_builtin": {
+                        "type": "bool"
+                    },
+                    "ldap_user_dn_password": {
+                        "type": "str"
+                    },
+                    "ldap_server": {
+                        "type": "str"
+                    },
+                    "unix_primary_group": {
+                        "type": "bool"
+                    },
+                    "ldap_base_dn": {
+                        "type": "str"
+                    },
+                    "bind_path_user": {
+                        "type": "str"
+                    },
+                    "ssl": {
+                        "type": "str",
+                        "choices": [
+                            "OFF",
+                            "ON",
+                            "START_TLS"
+                        ]
+                    },
+                    "readonly": {
+                        "type": "bool"
+                    },
+                    "ldap_realm": {
+                        "type": "bool"
+                    },
+                    "schema_mode": {
+                        "type": "str",
+                        "choices": [
+                            "RFC2307",
+                            "SFU",
+                            "SFU20"
+                        ]
+                    },
+                    "ldap_domain": {
+                        "type": "str"
+                    },
+                    "cn_realm": {
+                        "type": "str"
+                    },
+                    "user_cn": {
+                        "type": "bool"
+                    },
+                    "rangesize": {
+                        "type": "int"
+                    },
+                    "bind_path_group": {
+                        "type": "str"
+                    },
+                    "sssd_compat": {
+                        "type": "bool"
+                    }
+                }
+            },
+            "range_low": {
+                "type": "int"
             }
         }
     },
     "user_create": {
         "type": "dict",
         "options": {
-            "uid": {
-                "type": "int"
-            },
             "username": {
+                "type": "str"
+            },
+            "sshpubkey": {
+                "type": "str"
+            },
+            "password": {
+                "type": "str"
+            },
+            "shell": {
                 "type": "str"
             },
             "group": {
                 "type": "int"
             },
-            "group_create": {
+            "uid": {
+                "type": "int"
+            },
+            "microsoft_account": {
                 "type": "bool"
             },
             "home": {
                 "type": "str"
             },
-            "home_mode": {
-                "type": "str"
+            "sudo": {
+                "type": "bool"
             },
-            "shell": {
-                "type": "str"
+            "group_create": {
+                "type": "bool"
             },
             "full_name": {
                 "type": "str"
@@ -819,39 +771,130 @@ API_ARG_SPECS = {
             "email": {
                 "type": "str"
             },
-            "password": {
+            "home_mode": {
                 "type": "str"
-            },
-            "password_disabled": {
-                "type": "bool"
-            },
-            "locked": {
-                "type": "bool"
-            },
-            "microsoft_account": {
-                "type": "bool"
-            },
-            "smb": {
-                "type": "bool"
-            },
-            "sudo": {
-                "type": "bool"
             },
             "sudo_nopasswd": {
                 "type": "bool"
             },
+            "groups": {
+                "type": "list"
+            },
             "sudo_commands": {
                 "type": "list"
             },
-            "sshpubkey": {
-                "type": "str"
-            },
-            "groups": {
-                "type": "list"
+            "locked": {
+                "type": "bool"
             },
             "attributes": {
                 "type": "dict",
                 "suboptions": {}
+            },
+            "smb": {
+                "type": "bool"
+            },
+            "password_disabled": {
+                "type": "bool"
+            }
+        }
+    },
+    "alert_service_create": {
+        "type": "dict",
+        "options": {
+            "attributes": {
+                "type": "dict",
+                "suboptions": {}
+            },
+            "type": {
+                "type": "str"
+            },
+            "name": {
+                "type": "str"
+            },
+            "enabled": {
+                "type": "bool"
+            },
+            "level": {
+                "type": "str",
+                "choices": [
+                    "INFO",
+                    "NOTICE",
+                    "WARNING",
+                    "ERROR",
+                    "CRITICAL",
+                    "ALERT",
+                    "EMERGENCY"
+                ]
+            }
+        }
+    },
+    "activedirectory_update": {
+        "type": "dict",
+        "options": {
+            "use_default_domain": {
+                "type": "bool"
+            },
+            "kerberos_realm": {
+                "type": "int"
+            },
+            "verbose_logging": {
+                "type": "bool"
+            },
+            "bindname": {
+                "type": "str"
+            },
+            "timeout": {
+                "type": "int"
+            },
+            "allow_trusted_doms": {
+                "type": "bool"
+            },
+            "enable": {
+                "type": "bool"
+            },
+            "domainname": {
+                "type": "str"
+            },
+            "site": {
+                "type": "str"
+            },
+            "nss_info": {
+                "type": "str",
+                "choices": [
+                    "SFU",
+                    "SFU20",
+                    "RFC2307"
+                ]
+            },
+            "netbiosalias": {
+                "type": "list"
+            },
+            "createcomputer": {
+                "type": "str"
+            },
+            "netbiosname": {
+                "type": "str"
+            },
+            "netbiosname_b": {
+                "type": "str"
+            },
+            "bindpw": {
+                "type": "str"
+            },
+            "allow_dns_updates": {
+                "type": "bool"
+            },
+            "disable_freenas_cache": {
+                "type": "bool"
+            },
+            "dns_timeout": {
+                "type": "int"
+            },
+            "restrict_pam": {
+                "type": "bool"
+            },
+            "kerberos_principal": {
+                "type": "str"
             }
         }
     }

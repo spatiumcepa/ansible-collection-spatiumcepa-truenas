@@ -125,3 +125,12 @@
         - truenas_idmap
   tags:
     - truenas_idmap
+
+- name: Manage Cronjob Configuration
+  include_tasks:
+    file: cronjob.yml
+    apply:
+      tags:
+        - truenas_cronjob
+  tags:
+    - truenas_cronjob

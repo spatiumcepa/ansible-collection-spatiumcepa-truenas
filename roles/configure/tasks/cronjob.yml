@@ -1,0 +1,9 @@
+---
+- name: Cronjob Item Configuration via TrueNAS API
+  truenas_api_cronjob:
+    model: "{{ cronjob_item.model }}"
+  register: truenas_api_result_cronjob_item_update
+  with_items: "{{ truenas_config_cronjob }}"
+  loop_control:
+    loop_var: cronjob_item
+  when: truenas_config_cronjob is defined

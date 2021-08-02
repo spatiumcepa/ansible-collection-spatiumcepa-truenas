@@ -200,6 +200,22 @@ class TruenasActivedirectory(TruenasResource):
         return response
 
 
+class TruenasAlertservice(TruenasResource):
+
+    RESOURCE_API_MODEL = 'alert_service_create'
+    _RESOURCE_PATH = '/alertservice'
+    _RESOURCE_ITEM_PATH = '/alertservice/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'name'
+
+
+class TruenasCronjob(TruenasResource):
+
+    RESOURCE_API_MODEL = 'cron_job_create'
+    _RESOURCE_PATH = '/cronjob'
+    _RESOURCE_ITEM_PATH = '/cronjob/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'description'
+
+
 class TruenasGroup(TruenasResource):
 
     RESOURCE_API_MODEL = 'group_create'
@@ -223,14 +239,6 @@ class TruenasGroup(TruenasResource):
             elif existing_model[new_key] != new_model[new_key]:
                 has_changes = True
         return has_changes
-
-
-class TruenasAlertservice(TruenasResource):
-
-    RESOURCE_API_MODEL = 'alert_service_create'
-    _RESOURCE_PATH = '/alertservice'
-    _RESOURCE_ITEM_PATH = '/alertservice/id/{id}'
-    RESOURCE_SEARCH_FIELD = 'name'
 
 
 class TruenasIdmap(TruenasResource):

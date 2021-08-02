@@ -95,7 +95,7 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS["nfs_update"]
+            model=API_ARG_SPECS["nfs_update_0"]
         ),
         supports_check_mode=True,
     )

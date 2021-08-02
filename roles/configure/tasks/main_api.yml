@@ -134,3 +134,12 @@
         - truenas_cronjob
   tags:
     - truenas_cronjob
+
+- name: Manage Pool Dataset Configuration
+  include_tasks:
+    file: pool_dataset.yml
+    apply:
+      tags:
+        - truenas_pool_dataset
+  tags:
+    - truenas_pool_dataset

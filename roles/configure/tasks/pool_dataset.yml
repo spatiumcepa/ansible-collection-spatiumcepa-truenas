@@ -1,0 +1,10 @@
+---
+- name: Manage Pool Dataset Items
+  truenas_api_pool_dataset:
+    model: "{{ dataset_item.model }}"
+    state: "{{ dataset_item.state | default(omit) }}"
+  register: truenas_api_result_pool_dataset_item_update
+  with_items: "{{ truenas_config_pool_dataset }}"
+  loop_control:
+    loop_var: dataset_item
+  when: truenas_config_pool_dataset is defined

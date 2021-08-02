@@ -137,7 +137,7 @@ class TruenasResource(object):
             self.resource_created = response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
             return response
 
-        # upate found item
+        # update found item
         found_item = find_item_response[HTTPResponse.BODY]
         found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
 
@@ -155,7 +155,7 @@ class TruenasResource(object):
             return find_item_response
 
         # delete found item
-        # upate found item
+        # update found item
         found_item = find_item_response[HTTPResponse.BODY]
         found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
 
@@ -167,7 +167,7 @@ class TruenasResource(object):
 
 class TruenasActivedirectory(TruenasResource):
 
-    RESOURCE_API_MODEL = 'activedirectory_update'
+    RESOURCE_API_MODEL = 'activedirectory_update_0'
     _RESOURCE_PATH = '/activedirectory'
 
     def update(self, new_model):
@@ -202,7 +202,7 @@ class TruenasActivedirectory(TruenasResource):
 
 class TruenasAlertservice(TruenasResource):
 
-    RESOURCE_API_MODEL = 'alert_service_create'
+    RESOURCE_API_MODEL = 'alertservice_update_1'
     _RESOURCE_PATH = '/alertservice'
     _RESOURCE_ITEM_PATH = '/alertservice/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
@@ -210,7 +210,7 @@ class TruenasAlertservice(TruenasResource):
 
 class TruenasCronjob(TruenasResource):
 
-    RESOURCE_API_MODEL = 'cron_job_create'
+    RESOURCE_API_MODEL = 'cronjob_update_1'
     _RESOURCE_PATH = '/cronjob'
     _RESOURCE_ITEM_PATH = '/cronjob/id/{id}'
     RESOURCE_SEARCH_FIELD = 'description'
@@ -218,7 +218,7 @@ class TruenasCronjob(TruenasResource):
 
 class TruenasGroup(TruenasResource):
 
-    RESOURCE_API_MODEL = 'group_create'
+    RESOURCE_API_MODEL = 'group_update_1'
     _RESOURCE_PATH = '/group'
     _RESOURCE_ITEM_PATH = '/group/id/{id}'
     RESOURCE_SEARCH_FIELD = 'gid'
@@ -243,7 +243,7 @@ class TruenasGroup(TruenasResource):
 
 class TruenasIdmap(TruenasResource):
 
-    RESOURCE_API_MODEL = 'idmap_domain_create'
+    RESOURCE_API_MODEL = 'idmap_update_1'
     _RESOURCE_PATH = '/idmap'
     _RESOURCE_ITEM_PATH = '/idmap/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
@@ -251,7 +251,7 @@ class TruenasIdmap(TruenasResource):
 
 class TruenasInterface(TruenasResource):
 
-    RESOURCE_API_MODEL = 'interface_create'
+    RESOURCE_API_MODEL = 'interface_update_1'
     _RESOURCE_PATH = '/interface'
     _RESOURCE_ITEM_PATH = '/interface/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
@@ -259,14 +259,74 @@ class TruenasInterface(TruenasResource):
 
 class TruenasMail(TruenasResource):
 
-    RESOURCE_API_MODEL = 'mail_update'
+    RESOURCE_API_MODEL = 'mail_update_0'
     _RESOURCE_PATH = '/mail'
 
 
 class TruenasNetworkConfiguration(TruenasResource):
 
-    RESOURCE_API_MODEL = 'global_configuration_update'
+    RESOURCE_API_MODEL = 'network_configuration_update_0'
     _RESOURCE_PATH = '/network/configuration'
+
+
+class TruenasPoolDataset(TruenasResource):
+
+    RESOURCE_API_MODEL = 'pool_dataset_create_0'
+    _RESOURCE_PATH = '/pool/dataset'
+    _RESOURCE_ITEM_PATH = '/pool/dataset/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'name'
+
+    def _model_has_changes(self, existing_model, new_model):
+        has_changes = False
+        new_keys = new_model.keys()
+        for new_key in new_keys:
+            if new_key not in existing_model:
+                # some fields defined in an API schema are not returned to spec
+                # I infer this happens for fields that were moved to a different endpoint
+                # complain via exception: the resolution is to move the field to the "current" endpoint that does expect and return the field
+                # examples of this are sysloglevel and syslogserver seem to have moved to system/advanced
+                # and as of 12.0 API are in both system_general_update_0 and system_advanced_update_0 OAS specs
+                # the way role implementers should fix their model definitions is to migrate the fields to their new endpoint model for submission
+                raise TruenasModelError("Server did not return model field %s - check API schema arg spec for %s" % (new_key, self.RESOURCE_API_MODEL))
+
+            # unlike most of the API, returned dataset details have raw and parsed values for their fields
+            existing_rawvalue = existing_model[new_key]['rawvalue']
+            existing_value = existing_model[new_key]['value']
+            new_value = new_model[new_key]
+            # so for detetcing changes in new values
+            # first compare to rawvalue as that is what would have been submitted during initial creation
+            # second compare to value as the composite value will be considered valid input for ansible change calculation
+            # third compare raw with new after casting to string
+            if existing_rawvalue != new_value:
+                if existing_value != new_value:
+                    if str(existing_rawvalue) != str(new_value):
+                        has_changes = True
+
+        return has_changes
+
+    def update_item(self, model):
+        find_item_response = self._send_request(HTTPMethod.GET, self._RESOURCE_PATH + "?name=" + model["name"])
+        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+            # not found, route to create
+            response = self.create(model)
+            self.resource_created = response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
+            return response
+
+        # remove name from update model, it is read only
+        update_model = model.copy()
+        hasno = update_model.pop("name")
+
+        # update found item
+        # URL query by name responses with a list of matches, use the first match
+        found_item = find_item_response[HTTPResponse.BODY][0]
+        found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
+
+        self.resource_changed = self._model_has_changes(found_item, update_model)
+        # if model does not have changes, respond with find repsonse and avoid submitting data with no delta
+        if not self.resource_changed:
+            return find_item_response
+
+        return self._send_checked_request(found_item, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=found_item_id.replace('/', '%2F')), update_model)
 
 
 class TruenasService(TruenasResource):
@@ -358,19 +418,19 @@ class TruenasService(TruenasResource):
 
 class TruenasSystemAdvanced(TruenasResource):
 
-    RESOURCE_API_MODEL = 'system_advanced_update'
+    RESOURCE_API_MODEL = 'system_advanced_update_0'
     _RESOURCE_PATH = '/system/advanced'
 
 
 class TruenasSystemGeneral(TruenasResource):
 
-    RESOURCE_API_MODEL = 'general_settings'
+    RESOURCE_API_MODEL = 'system_general_update_0'
     _RESOURCE_PATH = '/system/general'
 
 
 class TruenasSystemNtpserver(TruenasResource):
 
-    RESOURCE_API_MODEL = 'ntp_create'
+    RESOURCE_API_MODEL = 'system_ntpserver_update_1'
     _RESOURCE_PATH = '/system/ntpserver'
     _RESOURCE_ITEM_PATH = '/system/ntpserver/id/{id}'
     RESOURCE_SEARCH_FIELD = 'address'
@@ -390,7 +450,7 @@ class TruenasSystemState(TruenasResource):
 
 class TruenasUser(TruenasResource):
 
-    RESOURCE_API_MODEL = 'user_create'  # /components/schemas/user_update_1 as it supersets #/components/schemas/user_create_0
+    RESOURCE_API_MODEL = 'user_create_0'
     _RESOURCE_PATH = '/user'
     _RESOURCE_ITEM_PATH = '/user/id/{id}'
     RESOURCE_SEARCH_FIELD = 'username'

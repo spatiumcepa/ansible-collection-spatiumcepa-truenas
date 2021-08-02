@@ -89,8 +89,6 @@ def truenas_group_id_for_name(group_list, group_name):
     return None
 
 
-
-
 class FilterModule(object):
     def filters(self):
         return {

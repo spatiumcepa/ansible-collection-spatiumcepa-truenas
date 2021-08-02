@@ -153,6 +153,15 @@
   tags:
     - truenas_pool_snapshottask
 
+- name: Manage Sharing NFS Configuration
+  include_tasks:
+    file: sharing_nfs.yml
+    apply:
+      tags:
+        - truenas_sharing_nfs
+  tags:
+    - truenas_sharing_nfs
+
 - name: Manage Sharing SMB Configuration
   include_tasks:
     file: sharing_smb.yml

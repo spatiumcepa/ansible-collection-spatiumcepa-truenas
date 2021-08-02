@@ -442,6 +442,47 @@ class TruenasService(TruenasResource):
         return self._send_checked_request(existing_settings, HTTPMethod.PUT, service_url, settings)
 
 
+class TruenasSharingNfs(TruenasResource):
+
+    RESOURCE_API_MODEL = 'sharing_nfs_update_1'
+    _RESOURCE_PATH = '/sharing/nfs'
+    _RESOURCE_ITEM_PATH = '/sharing/nfs/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'comment'
+
+    def find_item(self, model):
+        found_item = None
+        response = {
+            HTTPResponse.STATUS_CODE: HTTPCode.NOT_FOUND,
+            HTTPResponse.HEADERS: {'ansible-simulated-response': True},
+            HTTPResponse.BODY: None,
+        }
+        if self.RESOURCE_SEARCH_FIELD not in model.keys():
+            raise TruenasModelError(
+                "Specified model parameter does not contain RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
+            )
+        # find NFS share by paths + comment
+        search_field_value = model[self.RESOURCE_SEARCH_FIELD]
+        search_paths_value = model['paths']
+        read_response = self.read()
+        item_list = read_response[HTTPResponse.BODY]
+        for item in item_list:
+            if self.RESOURCE_SEARCH_FIELD not in item.keys():
+                raise TruenasModelError(
+                    "find item candidate does not have field RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
+                )
+            if item[self.RESOURCE_SEARCH_FIELD] == search_field_value and item["paths"].sort() == search_paths_value.sort():
+                if found_item is not None:
+                    raise TruenasModelError(
+                        "Found more than one item with RESOURCE_SEARCH_FIELD %s having value %s - is the item value for the field unique ?" % (
+                            self.RESOURCE_SEARCH_FIELD, search_field_value)
+                    )
+                found_item = item
+                response[HTTPResponse.STATUS_CODE] = HTTPCode.OK
+                response[HTTPResponse.BODY] = item
+                break
+        return response
+
+
 class TruenasSharingSmb(TruenasResource):
 
     RESOURCE_API_MODEL = 'sharing_smb_update_1'

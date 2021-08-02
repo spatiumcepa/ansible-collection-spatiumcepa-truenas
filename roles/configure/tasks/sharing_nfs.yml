@@ -1,0 +1,10 @@
+---
+- name: Manage Sharing NFS Item
+  truenas_api_sharing_nfs:
+    model: "{{ nfs_item.model }}"
+    state: "{{ nfs_item.state | default(omit) }}"
+  register: truenas_api_result_sharing_nfs_item_update
+  with_items: "{{ truenas_config_sharing_nfs }}"
+  loop_control:
+    loop_var: nfs_item
+  when: truenas_config_sharing_nfs is defined

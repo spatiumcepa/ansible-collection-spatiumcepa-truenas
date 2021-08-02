@@ -1035,6 +1035,50 @@ API_ARG_SPECS = {
             }
         }
     },
+    "sharing_nfs_update_1": {
+        "type": "dict",
+        "options": {
+            "paths": {
+                "type": "list"
+            },
+            "comment": {
+                "type": "str"
+            },
+            "networks": {
+                "type": "list"
+            },
+            "hosts": {
+                "type": "list"
+            },
+            "alldirs": {
+                "type": "bool"
+            },
+            "ro": {
+                "type": "bool"
+            },
+            "quiet": {
+                "type": "bool"
+            },
+            "maproot_user": {
+                "type": "str"
+            },
+            "maproot_group": {
+                "type": "str"
+            },
+            "mapall_user": {
+                "type": "str"
+            },
+            "mapall_group": {
+                "type": "str"
+            },
+            "security": {
+                "type": "list"
+            },
+            "enabled": {
+                "type": "bool"
+            }
+        }
+    },
     "sharing_smb_update_1": {
         "type": "dict",
         "options": {

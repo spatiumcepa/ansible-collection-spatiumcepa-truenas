@@ -970,6 +970,68 @@ API_ARG_SPECS = {
             }
         }
     },
+    "pool_snapshottask_update_1": {
+        "type": "dict",
+        "options": {
+            "dataset": {
+                "type": "str"
+            },
+            "recursive": {
+                "type": "bool"
+            },
+            "exclude": {
+                "type": "list"
+            },
+            "lifetime_value": {
+                "type": "int"
+            },
+            "lifetime_unit": {
+                "type": "str",
+                "choices": [
+                    "HOUR",
+                    "DAY",
+                    "WEEK",
+                    "MONTH",
+                    "YEAR"
+                ]
+            },
+            "naming_schema": {
+                "type": "str"
+            },
+            "schedule": {
+                "type": "dict",
+                "suboptions": {
+                    "minute": {
+                        "type": "str"
+                    },
+                    "hour": {
+                        "type": "str"
+                    },
+                    "dom": {
+                        "type": "str"
+                    },
+                    "month": {
+                        "type": "str"
+                    },
+                    "dow": {
+                        "type": "str"
+                    },
+                    "begin": {
+                        "type": "str"
+                    },
+                    "end": {
+                        "type": "str"
+                    }
+                }
+            },
+            "allow_empty": {
+                "type": "bool"
+            },
+            "enabled": {
+                "type": "bool"
+            }
+        }
+    },
     "smb_update_0": {
         "type": "dict",
         "options": {

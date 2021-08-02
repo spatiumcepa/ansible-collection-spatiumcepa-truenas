@@ -1,0 +1,10 @@
+---
+- name: Manage Pool Snapshot Task Item
+  truenas_api_pool_snapshottask:
+    model: "{{ snapshottask_item.model }}"
+    state: "{{ snapshottask_item.state | default(omit) }}"
+  register: truenas_api_result_pool_snapshottask_item_update
+  with_items: "{{ truenas_config_pool_snapshottask }}"
+  loop_control:
+    loop_var: snapshottask_item
+  when: truenas_config_pool_snapshottask is defined

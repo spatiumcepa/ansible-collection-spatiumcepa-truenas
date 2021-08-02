@@ -94,7 +94,7 @@ options:
 """
 
 EXAMPLES = """
-  - name: Eservice Configuration via TrueNAS API
+  - name: SMB Service Configuration via TrueNAS API
     spatiumcepa.truenas.truenas_api_smb:
       model:
         netbiosname: "{{ inventory_hostname }}"

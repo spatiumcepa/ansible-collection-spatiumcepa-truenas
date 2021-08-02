@@ -143,3 +143,12 @@
         - truenas_pool_dataset
   tags:
     - truenas_pool_dataset
+
+- name: Manage Pool Snapshot Task Configuration
+  include_tasks:
+    file: pool_snapshottask.yml
+    apply:
+      tags:
+        - truenas_pool_snapshottask
+  tags:
+    - truenas_pool_snapshottask

@@ -272,7 +272,7 @@ options:
 """
 
 EXAMPLES = """
-  - name: Manage NTPServer via TrueNAS API
+  - name: Manage Pool Dataset via TrueNAS API
     spatiumcepa.truenas.truenas_api_pool_dataset:
       model:
         name: tank/home

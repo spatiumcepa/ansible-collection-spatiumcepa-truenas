@@ -42,7 +42,7 @@ options:
 """
 
 EXAMPLES = """
-  - name: Service Management via TrueNAS API
+  - name: Service Action Execution via TrueNAS API
     spatiumcepa.truenas.truenas_api_service:
       name: ssh
       action: reload

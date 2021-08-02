@@ -90,7 +90,7 @@ options:
 """
 
 EXAMPLES = """
-  - name: Eservice Configuration via TrueNAS API
+  - name: SSH Service Configuration via TrueNAS API
     spatiumcepa.truenas.truenas_api_ssh:
       model:
         kerberosauth: false

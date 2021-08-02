@@ -15,7 +15,7 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
-module: truenas_api_interface
+module: truenas_api_idmap
 
 short_description: Manage TrueNAS IDMaps
 
@@ -137,8 +137,8 @@ options:
 """
 
 EXAMPLES = """
-  - name: Interface Configuration via TrueNAS API
-    spatiumcepa.truenas.truenas_api_interface:
+  - name: ID Map Configuration via TrueNAS API
+    spatiumcepa.truenas.truenas_api_idmap:
       model:
         name: DS_TYPE_ACTIVEDIRECTORY
         options:

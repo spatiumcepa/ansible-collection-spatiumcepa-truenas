@@ -76,7 +76,7 @@ options:
 """
 
 EXAMPLES = """
-  - name: Eservice Configuration via TrueNAS API
+  - name: NFS Service Configuration via TrueNAS API
     spatiumcepa.truenas.truenas_api_nfs:
       model:
         v4: true

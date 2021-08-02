@@ -329,6 +329,14 @@ class TruenasPoolDataset(TruenasResource):
         return self._send_checked_request(found_item, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=found_item_id.replace('/', '%2F')), update_model)
 
 
+class TruenasPoolSnapshottask(TruenasResource):
+
+    RESOURCE_API_MODEL = 'pool_snapshottask_update_1'
+    _RESOURCE_PATH = '/pool/snapshottask'
+    _RESOURCE_ITEM_PATH = '/pool/snapshottask/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'dataset'
+
+
 class TruenasService(TruenasResource):
 
     RESOURCE_API_MODEL = None

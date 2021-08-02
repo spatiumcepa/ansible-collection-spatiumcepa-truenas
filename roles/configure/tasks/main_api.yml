@@ -152,3 +152,12 @@
         - truenas_pool_snapshottask
   tags:
     - truenas_pool_snapshottask
+
+- name: Manage Sharing SMB Configuration
+  include_tasks:
+    file: sharing_smb.yml
+    apply:
+      tags:
+        - truenas_sharing_smb
+  tags:
+    - truenas_sharing_smb

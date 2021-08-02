@@ -1,10 +1,13 @@
 from __future__ import absolute_import, division, print_function
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import TruenasModelError
 __metaclass__ = type
 
 # module argument specs derived from TrueNAS API v2.0 OpenAPI Spec 3.0 definition
 
 
 def strip_null_module_params(params):
+    if params is None:
+        raise TruenasModelError("Module params is null. Not expected.")
     return {k: v for k, v in params.items() if v is not None}
 
 
@@ -1026,6 +1029,86 @@ API_ARG_SPECS = {
             },
             "allow_empty": {
                 "type": "bool"
+            },
+            "enabled": {
+                "type": "bool"
+            }
+        }
+    },
+    "sharing_smb_update_1": {
+        "type": "dict",
+        "options": {
+            "purpose": {
+                "type": "str",
+                "choices": [
+                    "NO_PRESET",
+                    "DEFAULT_SHARE",
+                    "ENHANCED_TIMEMACHINE",
+                    "MULTI_PROTOCOL_AFP",
+                    "MULTI_PROTOCOL_NFS",
+                    "PRIVATE_DATASETS",
+                    "WORM_DROPBOX"
+                ]
+            },
+            "path": {
+                "type": "str"
+            },
+            "path_suffix": {
+                "type": "str"
+            },
+            "home": {
+                "type": "bool"
+            },
+            "name": {
+                "type": "str"
+            },
+            "comment": {
+                "type": "str"
+            },
+            "ro": {
+                "type": "bool"
+            },
+            "browsable": {
+                "type": "bool"
+            },
+            "timemachine": {
+                "type": "bool"
+            },
+            "recyclebin": {
+                "type": "bool"
+            },
+            "guestok": {
+                "type": "bool"
+            },
+            "abe": {
+                "type": "bool"
+            },
+            "hostsallow": {
+                "type": "list"
+            },
+            "hostsdeny": {
+                "type": "list"
+            },
+            "aapl_name_mangling": {
+                "type": "bool"
+            },
+            "acl": {
+                "type": "bool"
+            },
+            "durablehandle": {
+                "type": "bool"
+            },
+            "shadowcopy": {
+                "type": "bool"
+            },
+            "streams": {
+                "type": "bool"
+            },
+            "fsrvp": {
+                "type": "bool"
+            },
+            "auxsmbconf": {
+                "type": "str"
             },
             "enabled": {
                 "type": "bool"

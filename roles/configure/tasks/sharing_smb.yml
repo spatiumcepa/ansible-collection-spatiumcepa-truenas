@@ -1,0 +1,10 @@
+---
+- name: Manage Sharing SMB Item
+  truenas_api_sharing_smb:
+    model: "{{ smb_item.model }}"
+    state: "{{ smb_item.state | default(omit) }}"
+  register: truenas_api_result_sharing_smb_item_update
+  with_items: "{{ truenas_config_sharing_smb }}"
+  loop_control:
+    loop_var: smb_item
+  when: truenas_config_sharing_smb is defined

@@ -306,7 +306,8 @@ class TruenasPoolDataset(TruenasResource):
 
     def update_item(self, model):
         find_item_response = self._send_request(HTTPMethod.GET, self._RESOURCE_PATH + "?name=" + model["name"])
-        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND:
+        # URL query by name responses with a list of matches, check it actually returned one
+        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND or len(find_item_response[HTTPResponse.BODY]) == 0:
             # not found, route to create
             response = self.create(model)
             self.resource_created = response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
@@ -327,6 +328,23 @@ class TruenasPoolDataset(TruenasResource):
             return find_item_response
 
         return self._send_checked_request(found_item, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=found_item_id.replace('/', '%2F')), update_model)
+
+    def delete_item(self, model):
+        find_item_response = self._send_request(HTTPMethod.GET, self._RESOURCE_PATH + "?name=" + model["name"])
+        # URL query by name responses with a list of matches, check it actually returned one
+        # if it could not be found, it doesn't need deleted
+        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND or len(find_item_response[HTTPResponse.BODY]) == 0:
+            return find_item_response
+
+        # delete found item
+        # URL query by name responses with a list of matches, use the first match
+        found_item = find_item_response[HTTPResponse.BODY][0]
+        found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
+
+        delete_response = self._send_checked_request({}, HTTPMethod.DELETE, self._RESOURCE_ITEM_PATH.format(id=found_item_id.replace('/', '%2F')))
+        self.resource_changed = delete_response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
+        self.resource_deleted = self.resource_changed
+        return delete_response
 
 
 class TruenasPoolSnapshottask(TruenasResource):
@@ -422,6 +440,14 @@ class TruenasService(TruenasResource):
             return existing_settings_response
 
         return self._send_checked_request(existing_settings, HTTPMethod.PUT, service_url, settings)
+
+
+class TruenasSharingSmb(TruenasResource):
+
+    RESOURCE_API_MODEL = 'sharing_smb_update_1'
+    _RESOURCE_PATH = '/sharing/smb'
+    _RESOURCE_ITEM_PATH = '/sharing/smb/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'name'
 
 
 class TruenasSystemAdvanced(TruenasResource):

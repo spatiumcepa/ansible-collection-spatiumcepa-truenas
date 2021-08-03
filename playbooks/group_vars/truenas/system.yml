@@ -1,0 +1,31 @@
+---
+truenas_config_system_general_ui_address:
+  - "0.0.0.0"
+truenas_config_system_general_ui_httpsredirect: true
+
+truenas_config_system_advanced_syslogserver: syslog.corp.spatium-cepa.com
+
+truenas_config_system_general:
+  ui_address: "{{ truenas_config_system_general_ui_address | default(['0.0.0.0']) }}"
+  ui_httpsredirect: "{{ truenas_config_system_general_ui_httpsredirect | default(false) }}"
+  timezone: America/New_York
+
+truenas_config_system_advanced:
+  autotune: true
+  consolemenu: true
+  consolemsg: true
+  motd: "Welcome to TrueNAS {{ truenas_hostname }}"
+  serialconsole: true
+  serialport: "0x2f8"
+  serialspeed: "115200"
+  syslog_transport: UDP
+  sysloglevel: F_INFO
+  syslogserver: "{{ truenas_config_system_advanced_syslogserver }}"
+
+truenas_config_system_ntpserver:
+  # prefer corp2 domain controller as NTP server to ensure kerberos communications succeed
+  - model:
+      address: dc01.corp02.corp.spatium-cepa.com
+      prefer: true
+
+truenas_release_train: TrueNAS-12.0-STABLE

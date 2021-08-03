@@ -1,0 +1,37 @@
+---
+truenas_config_service:
+  - name: ssh
+    enable: true
+    running: true
+  - name: nfs
+    enable: true
+    running: true
+  - name: cifs # AKA smb
+    enable: true
+    running: true
+
+truenas_config_service_ssh:
+  model:
+    kerberosauth: true
+    passwordauth: true
+    tcpfwd: false
+
+truenas_config_service_nfs:
+  model:
+    v4: true
+    v4_v3owner: true
+    mountd_log: true
+
+truenas_config_service_smb:
+  model:
+    netbiosname: "{{ truenas_hostname }}"
+    workgroup: CORP
+    description: "{{ site_name }} TrueNAS Server"
+    enable_smb1: false
+    unixcharset: UTF-8
+    loglevel: MINIMUM
+    syslog: false
+    localmaster: true
+    guest: nobody
+    aapl_extensions: true
+    ntlmv1_auth: false

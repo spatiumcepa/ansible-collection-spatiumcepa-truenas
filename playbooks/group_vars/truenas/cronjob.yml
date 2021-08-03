@@ -1,0 +1,15 @@
+---
+truenas_config_cronjob:
+  - model:
+      description: Audit User Quotas
+      command: /usr/local/bin/audit_user_quotas.py
+      enabled: true
+      schedule:
+        dom: "*"
+        dow: "*"
+        hour: "*"
+        minute: "23"
+        month: "*"
+      stderr: false
+      stdout: true
+      user: root

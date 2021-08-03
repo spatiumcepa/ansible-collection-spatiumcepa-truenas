@@ -1,0 +1,8 @@
+---
+truenas_config_user:
+  # test emails among other features email root because reasons, so make sure it is an email we recieve things at
+  - model:
+      username: root
+      email: truenas-monitoring@spatium-cepa.com
+  # use syncthing user definition from the role defaults
+  - "{{ truenas_role_default_user_syncthing }}"

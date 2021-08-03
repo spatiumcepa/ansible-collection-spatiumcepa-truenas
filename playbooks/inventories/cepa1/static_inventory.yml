@@ -1,0 +1,24 @@
+---
+# spatiumcepa.truenas inventory example of statically defined TrueNAS machines
+
+all:
+  hosts:
+  children:
+    # specify site group membership of associated hosts
+    # see group_vars/site_corp01.yml etc for site host group specific variables
+    site_corp01:
+      hosts:
+        truenas01.corp01.spatium-cepa.com:
+        truenas02.corp01.spatium-cepa.com:
+    site_corp02:
+      hosts:
+        truenas03.corp01.spatium-cepa.com:
+    # specify server type host group for based on role(s) of machine
+    # see group_vars/HOSTGROUP.yml for host group specific variables
+    # see host_vars/<HOSTNAME>.yml for host specific variables
+    # host specific vars can also be key: value entries as children of a host
+    truenas:
+      hosts:
+        truenas01.corp01.spatium-cepa.com:
+        truenas02.corp01.spatium-cepa.com:
+        truenas03.corp02.spatium-cepa.com:

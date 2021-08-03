@@ -1,0 +1,42 @@
+---
+truenas_config_pool_dataset:
+  - model:
+      name: tank/home
+      aclmode: PASSTHROUGH
+      copies: 1
+      refquota: 10995116277760 # 10TiB
+      refreservation: 10995116277760 # 10TiB
+      snapdir: HIDDEN
+  - model:
+      name: tank/storage
+      aclmode: PASSTHROUGH
+      copies: 1
+      refquota: 27487790694400 # 25TiB
+      refreservation: 27487790694400 # 25TiB
+      snapdir: HIDDEN
+  - model:
+      name: tank/plans
+      aclmode: PASSTHROUGH
+      copies: 1
+      refquota: 10995116277760 # 10TiB
+      refreservation: 10995116277760 # 10TiB
+      snapdir: HIDDEN
+
+truenas_config_pool_snapshottask:
+  - model:
+      dataset: tank/storage
+      recursive: true
+      exclude: []
+      lifetime_value: 2
+      lifetime_unit: WEEK
+      naming_schema: auto-%Y-%m-%d_%H-%M
+      schedule:
+        minute: "0"
+        hour: "*"
+        dom: "*"
+        month: "*"
+        dow: "*"
+        begin: "00:00"
+        end: "23:59"
+      allow_empty: true
+      enabled: true

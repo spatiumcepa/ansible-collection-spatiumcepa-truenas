@@ -1,0 +1,56 @@
+---
+truenas_config_sharing_nfs:
+  - "{{ truenas_config_sharing_nfs_home }}"
+  - "{{ truenas_config_sharing_nfs_home_root_mount }}"
+
+truenas_config_sharing_nfs_home:
+  model:
+    paths:
+      - /mnt/tank/home
+    enabled: true
+    comment: Home mount
+    hosts: []
+    alldirs: false
+    ro: false
+    quiet: false
+    security:
+      - SYS
+
+truenas_config_sharing_nfs_home_root_mount:
+  model:
+    paths:
+      - /mnt/tank/home
+    enabled: true
+    comment: Admin home mount
+    hosts:
+      - "{{ site_sshfs_server_hostname }}"
+    alldirs: false
+    ro: false
+    quiet: false
+    maproot_user: root
+    maproot_group: wheel
+    security:
+      - SYS
+
+truenas_config_sharing_smb:
+  - "{{ truenas_config_sharing_smb_plans }}"
+
+truenas_config_sharing_smb_plans:
+  model:
+    path: /mnt/tank/plans
+    name: plans
+    purpose: DEFAULT_SHARE
+    acl: true
+    auxsmbconf: ""
+    browsable: true
+    comment: ""
+    durablehandle: true
+    enabled: true
+    fsrvp: false
+    guestok: false
+    home: false
+    recyclebin: false
+    ro: false
+    shadowcopy: true
+    streams: true
+    timemachine: false

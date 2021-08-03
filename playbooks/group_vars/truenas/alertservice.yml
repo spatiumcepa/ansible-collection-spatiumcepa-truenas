@@ -1,0 +1,11 @@
+---
+truenas_config_alertservice:
+  - model:
+      name: E-Mail
+      enabled: true
+      level: WARNING
+      attributes:
+        email: truenas-alerts@spatium-cepa.com
+  - model:
+      name: SNMP Trap
+      enabled: false

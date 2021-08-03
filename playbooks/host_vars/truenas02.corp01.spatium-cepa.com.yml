@@ -1,0 +1,36 @@
+---
+# truenas02.corp01.truenas-monitoring@spatium-cepa.com host variables
+
+truenas_api_token: !vault |
+  $ANSIBLE_VAULT;1.2;AES256;truenas_admin
+  33353134386631356566623135636361626363623335356433633362336134643866386664343337
+  3339363138353937383638666164333133333336323031300a343564623330383430383464306233
+  62373262656231363163623234666530663035633638326431316636633237613832613738353836
+  3433363033366438630a356237353337366465643865343938353033663164383764343138373364
+  6231
+
+truenas_hostname: truenas02
+
+truenas_config_network_configuration:
+  hostname: "{{ truenas_hostname }}"
+  domain: "{{ site_name }}.spatium-cepa.com"
+  ipv4gateway: 10.2.21.1
+  nameserver1: 10.2.40.100
+  nameserver2: 10.3.40.100
+  nameserver3: 10.1.40.100
+
+truenas_config_interface:
+  - model:
+      name: lagg0
+      aliases:
+        - type: INET
+          address: 10.2.21.32
+          netmask: 23
+      ipv4_dhcp: false
+      ipv6_auto: false
+      options: ""
+      mtu:
+      lag_protocol: LACP
+      lag_ports:
+        - ix0
+        - ix1

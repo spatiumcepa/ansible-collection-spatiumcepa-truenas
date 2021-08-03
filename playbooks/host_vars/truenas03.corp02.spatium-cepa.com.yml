@@ -1,0 +1,30 @@
+---
+# truenas03.corp01.spatium-cepa.com host variables
+
+truenas_api_token: cereal
+
+truenas_hostname: truenas03
+
+truenas_config_network_configuration:
+  hostname: "{{ truenas_hostname }}"
+  domain: "{{ site_name }}.spatium-cepa.com"
+  ipv4gateway: 10.3.21.1
+  nameserver1: 10.3.40.100
+  nameserver2: 10.1.40.100
+  nameserver3: 10.2.40.100
+
+truenas_config_interface:
+  - model:
+      name: lagg0
+      aliases:
+        - type: INET
+          address: 10.3.21.33
+          netmask: 23
+      ipv4_dhcp: false
+      ipv6_auto: false
+      options: ""
+      mtu:
+      lag_protocol: LACP
+      lag_ports:
+        - ix0
+        - ix1

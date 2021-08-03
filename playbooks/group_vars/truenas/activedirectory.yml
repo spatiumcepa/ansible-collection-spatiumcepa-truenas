@@ -1,0 +1,41 @@
+---
+truenas_activedirectory_domain_name: CORP.SPATIUM-CEPA.COM
+truenas_activedirectory_domain_account_name: domain_adder
+truenas_activedirectory_domain_account_password: !vault |
+  $ANSIBLE_VAULT;1.2;AES256;truenas_admin
+  31316666653938326665333663373135323430326365656338646136336139613231643262613335
+  3834353065653938653662633264313563313339316233620a343331333733333962643537336264
+  34646534343332373232316534666631373565336462633737303636306163363762353762383530
+  6461623537373161360a653733653364346531613035653433656238396466616137396363323234
+  37303435363938623133303863353138333338333433646237386534336435333033
+truenas_activedirectory_site_name: "{{ site_name }}"
+truenas_activedirectory_computer_account_ou: Spatium Cepa/Machines/Appliances
+
+truenas_config_activedirectory:
+  model:
+    allow_dns_updates: true
+    allow_trusted_doms: false
+    bindname: "{{ truenas_activedirectory_domain_account_name }}"
+    bindpw: "{{ truenas_activedirectory_domain_account_password }}"
+    createcomputer: "{{ truenas_activedirectory_computer_account_ou }}"
+    disable_freenas_cache: false
+    dns_timeout: 10
+    domainname: "{{ truenas_activedirectory_domain_name }}"
+    enable: true
+    netbiosname: "{{ truenas_hostname }}"
+    nss_info: RFC2307
+    restrict_pam: false
+    site: "{{ truenas_activedirectory_site_name }}"
+    timeout: 60
+    use_default_domain: true
+    verbose_logging: true
+
+truenas_config_idmap:
+  - model:
+      name: DS_TYPE_ACTIVEDIRECTORY # config token for Active Directory - Primary Domain
+      options:
+        schema_mode: RFC2307
+        unix_nss_info: true
+        unix_primary_group: true
+      range_high: 9000000
+      range_low: 2000

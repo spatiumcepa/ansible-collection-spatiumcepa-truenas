@@ -1,0 +1,32 @@
+---
+- name: Check if there is an update available from update server
+  truenas_api_update:
+    action: check_available
+  register: truenas_pending_updates
+
+- name: Download (if not already in cache) and apply the update
+  truenas_api_update:
+    action: update
+  when: truenas_pending_updates.action_result.status == 'AVAILABLE'
+
+- name: Wait for update to finish applying
+  truenas_api_update:
+    action: check_available
+  register: truenas_reboot_required
+  when: truenas_pending_updates.action_result.status == 'AVAILABLE' or truenas_pending_updates.action_result.status == 'REBOOT_REQUIRED'
+  until: truenas_reboot_required.action_result.status == 'REBOOT_REQUIRED'
+  retries: 20
+  delay: 30
+
+- name: Reboot TrueNAS system
+  truenas_api_system_reboot:
+    model:
+      delay: 5
+  when: truenas_reboot_required.action_result.status | default('UNKNOWN') == 'REBOOT_REQUIRED'
+
+- name: Keep checking until the system has booted and reports ready
+  truenas_api_system_state_facts:
+  register: truenas_result_system_state_facts
+  until: truenas_result_system_state_facts.ansible_facts.system_state == 'READY'
+  retries: 20
+  delay: 30

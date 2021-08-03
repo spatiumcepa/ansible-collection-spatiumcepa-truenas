@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: spatiumcepa.truenas.update
+  author: Nicholas Kiraly (@nkiraly)
+  description: Update TrueNAS instance
+
+  license: BSD-2-Clause
+
+  min_ansible_version: 2.10
+
+  galaxy_tags:
+    - truenas
+
+  platforms:
+    - name: FreeBSD
+      versions:
+        - 11.0
+        - 11.1
+        - 12.0
+    - name: Ubuntu
+      versions:
+        - 18.04
+        - 20.04

@@ -1,0 +1,22 @@
+---
+- name: Update TrueNAS Hosts
+  hosts: truenas
+  gather_facts: false
+  vars:
+    # truenas_api_* modules expect to use a connection provided by the truenas_api connection plugin
+    ansible_connection: spatiumcepa.truenas.truenas_api
+    # talk to TrueNAS API over HTTPS
+    ansible_truenas_api_address: "https://{{ inventory_hostname }}"
+    ansible_truenas_validate_certs: False
+    # connection plugin looks for a TrueNAS API token in the variable ansible_truenas_api_token
+    ansible_truenas_api_token: "{{ truenas_api_token }}"
+  tasks:
+    - name: Update TrueNAS Host
+      include_role:
+        name: spatiumcepa.truenas.update
+        tasks_from: update.yml
+        apply:
+          tags:
+            - truenas_update
+      tags:
+        - truenas_update

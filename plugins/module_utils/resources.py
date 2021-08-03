@@ -511,6 +511,17 @@ class TruenasSystemNtpserver(TruenasResource):
     RESOURCE_SEARCH_FIELD = 'address'
 
 
+class TruenasSystemReboot(TruenasResource):
+
+    RESOURCE_API_MODEL = 'system_reboot_0'
+    _RESOURCE_PATH = '/system/reboot'
+
+    def reboot(self, model):
+        response = self._send_request(HTTPMethod.POST, self._RESOURCE_PATH,  model)
+        self.resource_changed = True
+        return response
+
+
 class TruenasSystemState(TruenasResource):
 
     RESOURCE_API_MODEL = 'json_string'
@@ -521,6 +532,45 @@ class TruenasSystemState(TruenasResource):
             conn,
             check_mode
         )
+
+
+class TruenasUpdate(TruenasResource):
+
+    RESOURCE_API_MODEL = 'update_update_0'
+    _RESOURCE_PATH = '/update'
+
+    def __init__(self, conn, check_mode=False):
+        super(TruenasUpdate, self).__init__(
+            conn,
+            check_mode
+        )
+        self.action_result = None
+
+    def action(self, action, model):
+        response = None
+        self.action_result = {}
+        if action == 'check_available':
+            response = self._send_request(HTTPMethod.POST, "%s/%s" % (self._RESOURCE_PATH, action), model)
+        elif action == 'download':
+            response = self._send_request(HTTPMethod.GET, "%s/%s" % (self._RESOURCE_PATH, action))
+        elif action == 'get_auto_download':
+            response = self._send_request(HTTPMethod.GET, "%s/%s" % (self._RESOURCE_PATH, action))
+        elif action == 'get_pending':
+            response = self._send_request(HTTPMethod.POST, "%s/%s" % (self._RESOURCE_PATH, action), model)
+        elif action == 'get_trains':
+            response = self._send_request(HTTPMethod.GET, "%s/%s" % (self._RESOURCE_PATH, action))
+        elif action == 'manual':
+            response = self._send_request(HTTPMethod.POST, "%s/%s" % (self._RESOURCE_PATH, action), model)
+        elif action == 'set_auto_download':
+            response = self._send_request(HTTPMethod.POST, "%s/%s" % (self._RESOURCE_PATH, action), model)
+        elif action == 'set_train':
+            response = self._send_request(HTTPMethod.POST, "%s/%s" % (self._RESOURCE_PATH, action), model)
+        elif action == 'update':
+            response = self._send_request(HTTPMethod.POST, "%s/%s" % (self._RESOURCE_PATH, action), model)
+        else:
+            raise TruenasModelError("Unknown update action '%s' - how did we get here?" % (action))
+        self.action_result = response[HTTPResponse.BODY]
+        return response
 
 
 class TruenasUser(TruenasResource):

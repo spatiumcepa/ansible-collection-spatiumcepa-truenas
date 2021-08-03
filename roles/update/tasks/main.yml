@@ -1,0 +1,9 @@
+---
+- name: Update to latest version of release train
+  include_tasks:
+    file: update.yml
+    apply:
+      tags:
+        - truenas_update
+  tags:
+    - truenas_update

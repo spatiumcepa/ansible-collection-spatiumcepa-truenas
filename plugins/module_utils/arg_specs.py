@@ -1288,6 +1288,14 @@ API_ARG_SPECS = {
             }
         }
     },
+    "system_reboot_0": {
+        "type": "dict",
+        "options": {
+            "delay": {
+                "type": "int"
+            }
+        }
+    },
     "system_advanced_update_0": {
         "type": "dict",
         "options": {
@@ -1469,6 +1477,17 @@ API_ARG_SPECS = {
                 "type": "int"
             },
             "force": {
+                "type": "bool"
+            }
+        }
+    },
+    "update_update_0": {
+        "type": "dict",
+        "options": {
+            "train": {
+                "type": "str"
+            },
+            "reboot": {
                 "type": "bool"
             }
         }

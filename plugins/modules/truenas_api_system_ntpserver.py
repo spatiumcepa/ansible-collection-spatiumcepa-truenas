@@ -100,7 +100,7 @@ EXAMPLES = """
   - name: Manage NTPServer via TrueNAS API
     spatiumcepa.truenas.truenas_api_system_ntpserver:
       model:
-        address: hq2-dc01.corp.vicarious.com
+        address: hq2-dc01.corp.spatium-cepa.com
         prefer: true
       state: present
 """

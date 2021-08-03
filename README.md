@@ -38,8 +38,8 @@ $ ansible-doc -t module -l | grep spatium
 
 Roles provided by the spatiumcepa.truenas collection:
 
-- configure - Manage TrueNAS instances via the [TrueNAS API 2.0](https://www.truenas.com/docs/core/api/)
-- update - Update TrueNAS instances via the [TrueNAS API 2.0](https://www.truenas.com/docs/core/api/)
+- configure - Manage TrueNAS instances via the [TrueNAS API](https://www.truenas.com/docs/core/api/)
+- update - Update TrueNAS instances via the [TrueNAS API](https://www.truenas.com/docs/core/api/)
 
 ## Development
 

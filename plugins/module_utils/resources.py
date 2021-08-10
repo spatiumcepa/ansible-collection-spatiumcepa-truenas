@@ -3,6 +3,8 @@ __metaclass__ = type
 
 import copy
 from functools import partial
+import hashlib
+import json
 
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPMethod, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
@@ -92,29 +94,35 @@ class TruenasResource(object):
             HTTPResponse.HEADERS: {'ansible-simulated-response': True},
             HTTPResponse.BODY: None,
         }
-        if self.RESOURCE_SEARCH_FIELD not in model.keys():
-            raise TruenasModelError(
-                "Specified model parameter does not contain RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
-            )
-        search_field_value = model[self.RESOURCE_SEARCH_FIELD]
+
         read_response = self.read()
         item_list = read_response[HTTPResponse.BODY]
         for item in item_list:
-            if self.RESOURCE_SEARCH_FIELD not in item.keys():
-                raise TruenasModelError(
-                    "find item candidate does not have field RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
-                )
-            if item[self.RESOURCE_SEARCH_FIELD] == search_field_value:
+            item_hash = self._find_item_hash(item)
+            model_hash = self._find_item_hash(model)
+            if item_hash == model_hash:
                 if found_item is not None:
                     raise TruenasModelError(
-                        "Found more than one item with RESOURCE_SEARCH_FIELD %s having value %s - is the item value for the field unique ?" % (
-                            self.RESOURCE_SEARCH_FIELD, search_field_value)
+                        "Found second item match. RESOURCE_SEARCH_FIELD %s has value %s - is the item hash calculation for this resource type unique ?" % (
+                            self.RESOURCE_SEARCH_FIELD, model[self.RESOURCE_SEARCH_FIELD])
                     )
                 found_item = item
                 response[HTTPResponse.STATUS_CODE] = HTTPCode.OK
                 response[HTTPResponse.BODY] = item
                 break
         return response
+
+    def _find_item_hash(self, item):
+        # default find item matches by value of RESOURCE_SEARCH_FIELD
+        if self.RESOURCE_SEARCH_FIELD not in item.keys():
+            raise TruenasModelError(
+                "find item candidate does not contain RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
+            )
+        search_field_value = json.dumps(item[self.RESOURCE_SEARCH_FIELD])
+        search_field_encoded = search_field_value.encode()
+        search_hash = hashlib.sha1(search_field_encoded)
+        search_hexadecimal = search_hash.hexdigest()
+        return search_hexadecimal
 
     def update(self, new_model):
         read_response = self.read()
@@ -449,38 +457,19 @@ class TruenasSharingNfs(TruenasResource):
     _RESOURCE_ITEM_PATH = '/sharing/nfs/id/{id}'
     RESOURCE_SEARCH_FIELD = 'comment'
 
-    def find_item(self, model):
-        found_item = None
-        response = {
-            HTTPResponse.STATUS_CODE: HTTPCode.NOT_FOUND,
-            HTTPResponse.HEADERS: {'ansible-simulated-response': True},
-            HTTPResponse.BODY: None,
-        }
-        if self.RESOURCE_SEARCH_FIELD not in model.keys():
+    def _find_item_hash(self, item):
+        # match NFS share by comment + paths
+        if self.RESOURCE_SEARCH_FIELD not in item.keys():
             raise TruenasModelError(
-                "Specified model parameter does not contain RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
+                "find item candidate does not contain RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
             )
-        # find NFS share by paths + comment
-        search_field_value = model[self.RESOURCE_SEARCH_FIELD]
-        search_paths_value = model['paths']
-        read_response = self.read()
-        item_list = read_response[HTTPResponse.BODY]
-        for item in item_list:
-            if self.RESOURCE_SEARCH_FIELD not in item.keys():
-                raise TruenasModelError(
-                    "find item candidate does not have field RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
-                )
-            if item[self.RESOURCE_SEARCH_FIELD] == search_field_value and item["paths"].sort() == search_paths_value.sort():
-                if found_item is not None:
-                    raise TruenasModelError(
-                        "Found more than one item with RESOURCE_SEARCH_FIELD %s having value %s - is the item value for the field unique ?" % (
-                            self.RESOURCE_SEARCH_FIELD, search_field_value)
-                    )
-                found_item = item
-                response[HTTPResponse.STATUS_CODE] = HTTPCode.OK
-                response[HTTPResponse.BODY] = item
-                break
-        return response
+        search_field_value = json.dumps(item[self.RESOURCE_SEARCH_FIELD])
+        search_paths_value = json.dumps(item['paths'])
+        search_key = "{}_{}".format(search_field_value, search_paths_value)
+        search_key_encoded = search_key.encode()
+        search_hash = hashlib.sha1(search_key_encoded)
+        search_hexadecimal = search_hash.hexdigest()
+        return search_hexadecimal
 
 
 class TruenasSharingSmb(TruenasResource):

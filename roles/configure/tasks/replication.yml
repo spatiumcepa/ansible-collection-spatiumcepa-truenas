@@ -1,0 +1,10 @@
+---
+- name: Manage ZFS Replication Items
+  truenas_api_replication:
+    model: "{{ replication_item.model }}"
+    state: "{{ replication_item.state | default(omit) }}"
+  register: truenas_api_result_replication_item_update
+  with_items: "{{ truenas_config_replication }}"
+  loop_control:
+    loop_var: replication_item
+  when: truenas_config_replication is defined

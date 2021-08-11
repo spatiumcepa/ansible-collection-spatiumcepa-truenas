@@ -375,6 +375,42 @@ class TruenasPoolSnapshottask(TruenasResource):
         return search_hexadecimal
 
 
+class TruenasReplication(TruenasResource):
+    RESOURCE_API_MODEL_SPEC = 'replication_create_0'
+    RESOURCE_API_MODEL_CREATE = 'replication_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'replication_update_1'
+    _RESOURCE_PATH = '/replication'
+    _RESOURCE_ITEM_PATH = '/replication/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'name'
+
+    def _model_has_changes(self, existing_model, new_model):
+        has_changes = False
+        new_keys = new_model.keys()
+        for new_key in new_keys:
+            if new_key not in existing_model:
+                raise TruenasModelError("Server did not return model field %s - check API schema arg spec for %s" % (new_key, self.RESOURCE_API_MODEL))
+            elif existing_model[new_key] == {} and new_model[new_key] is None:
+                continue
+            elif new_key == "ssh_credentials":
+                # PUT model group field is the ssh credential id integer
+                # but GET item model returns the resolved credential details
+                if "id" in existing_model["ssh_credentials"]:
+                    has_changes = int(existing_model["ssh_credentials"]["id"]) != int(new_model["ssh_credentials"])
+            elif new_key == "periodic_snapshot_tasks":
+                # PUT model snapshot task is list of integer IDs
+                # but GET item model returns list of task models
+                if len(existing_model["periodic_snapshot_tasks"]) > 0:
+                    pst_id_list = []
+                    for pst_item in existing_model["periodic_snapshot_tasks"]:
+                        pst_id_list.append(int(pst_item["id"]))
+                    has_changes = set(pst_id_list) != set(new_model["periodic_snapshot_tasks"])
+                elif len(new_model["periodic_snapshot_tasks"]) > 0:
+                    has_changes = True
+            elif existing_model[new_key] != new_model[new_key]:
+                has_changes = True
+        return has_changes
+
+
 class TruenasService(TruenasResource):
 
     RESOURCE_API_MODEL_SPEC = None

@@ -37,3 +37,4 @@
         - truenas_pool_snapshottask
         - truenas_sharing_nfs
         - truenas_sharing_smb
+        - truenas_replication

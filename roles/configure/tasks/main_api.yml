@@ -170,3 +170,12 @@
         - truenas_sharing_smb
   tags:
     - truenas_sharing_smb
+
+- name: Manage ZFS Replication
+  include_tasks:
+    file: replication.yml
+    apply:
+      tags:
+        - truenas_replication
+  tags:
+    - truenas_replication

@@ -1388,6 +1388,444 @@ API_ARG_SPECS = {
             }
         }
     },
+    "replication_create_0": {
+        "type": "dict",
+        "options": {
+            "name": {
+                "type": "str"
+            },
+            "direction": {
+                "type": "str",
+                "choices": [
+                    "PUSH",
+                    "PULL"
+                ]
+            },
+            "transport": {
+                "type": "str",
+                "choices": [
+                    "SSH",
+                    "SSH+NETCAT",
+                    "LOCAL"
+                ]
+            },
+            "ssh_credentials": {
+                "type": "int"
+            },
+            "netcat_active_side": {
+                "type": "str",
+                "choices": [
+                    "LOCAL",
+                    "REMOTE"
+                ]
+            },
+            "netcat_active_side_listen_address": {
+                "type": "str"
+            },
+            "netcat_active_side_port_min": {
+                "type": "int"
+            },
+            "netcat_active_side_port_max": {
+                "type": "int"
+            },
+            "netcat_passive_side_connect_address": {
+                "type": "str"
+            },
+            "source_datasets": {
+                "type": "list"
+            },
+            "target_dataset": {
+                "type": "str"
+            },
+            "recursive": {
+                "type": "bool"
+            },
+            "exclude": {
+                "type": "list"
+            },
+            "properties": {
+                "type": "bool"
+            },
+            "properties_exclude": {
+                "type": "list"
+            },
+            "replicate": {
+                "type": "bool"
+            },
+            "encryption": {
+                "type": "bool"
+            },
+            "encryption_key": {
+                "type": "str"
+            },
+            "encryption_key_format": {
+                "type": "str",
+                "choices": [
+                    "HEX",
+                    "PASSPHRASE"
+                ]
+            },
+            "encryption_key_location": {
+                "type": "str"
+            },
+            "periodic_snapshot_tasks": {
+                "type": "list"
+            },
+            "naming_schema": {
+                "type": "list"
+            },
+            "also_include_naming_schema": {
+                "type": "list"
+            },
+            "auto": {
+                "type": "bool"
+            },
+            "schedule": {
+                "type": "dict",
+                "suboptions": {
+                    "minute": {
+                        "type": "str"
+                    },
+                    "hour": {
+                        "type": "str"
+                    },
+                    "dom": {
+                        "type": "str"
+                    },
+                    "month": {
+                        "type": "str"
+                    },
+                    "dow": {
+                        "type": "str"
+                    },
+                    "begin": {
+                        "type": "str"
+                    },
+                    "end": {
+                        "type": "str"
+                    }
+                }
+            },
+            "restrict_schedule": {
+                "type": "dict",
+                "suboptions": {
+                    "minute": {
+                        "type": "str"
+                    },
+                    "hour": {
+                        "type": "str"
+                    },
+                    "dom": {
+                        "type": "str"
+                    },
+                    "month": {
+                        "type": "str"
+                    },
+                    "dow": {
+                        "type": "str"
+                    },
+                    "begin": {
+                        "type": "str"
+                    },
+                    "end": {
+                        "type": "str"
+                    }
+                }
+            },
+            "only_matching_schedule": {
+                "type": "bool"
+            },
+            "allow_from_scratch": {
+                "type": "bool"
+            },
+            "readonly": {
+                "type": "str",
+                "choices": [
+                    "SET",
+                    "REQUIRE",
+                    "IGNORE"
+                ]
+            },
+            "hold_pending_snapshots": {
+                "type": "bool"
+            },
+            "retention_policy": {
+                "type": "str",
+                "choices": [
+                    "SOURCE",
+                    "CUSTOM",
+                    "NONE"
+                ]
+            },
+            "lifetime_value": {
+                "type": "int"
+            },
+            "lifetime_unit": {
+                "type": "str",
+                "choices": [
+                    "HOUR",
+                    "DAY",
+                    "WEEK",
+                    "MONTH",
+                    "YEAR"
+                ]
+            },
+            "compression": {
+                "type": "str",
+                "choices": [
+                    "LZ4",
+                    "PIGZ",
+                    "PLZIP"
+                ]
+            },
+            "speed_limit": {
+                "type": "int"
+            },
+            "large_block": {
+                "type": "bool"
+            },
+            "embed": {
+                "type": "bool"
+            },
+            "compressed": {
+                "type": "bool"
+            },
+            "retries": {
+                "type": "int"
+            },
+            "logging_level": {
+                "type": "str",
+                "choices": [
+                    "DEBUG",
+                    "INFO",
+                    "WARNING",
+                    "ERROR"
+                ]
+            },
+            "enabled": {
+                "type": "bool"
+            }
+        }
+    },
+    "replication_update_1": {
+        "type": "dict",
+        "options": {
+            "name": {
+                "type": "str"
+            },
+            "direction": {
+                "type": "str",
+                "choices": [
+                    "PUSH",
+                    "PULL"
+                ]
+            },
+            "transport": {
+                "type": "str",
+                "choices": [
+                    "SSH",
+                    "SSH+NETCAT",
+                    "LOCAL"
+                ]
+            },
+            "ssh_credentials": {
+                "type": "int"
+            },
+            "netcat_active_side": {
+                "type": "str",
+                "choices": [
+                    "LOCAL",
+                    "REMOTE"
+                ]
+            },
+            "netcat_active_side_listen_address": {
+                "type": "str"
+            },
+            "netcat_active_side_port_min": {
+                "type": "int"
+            },
+            "netcat_active_side_port_max": {
+                "type": "int"
+            },
+            "netcat_passive_side_connect_address": {
+                "type": "str"
+            },
+            "source_datasets": {
+                "type": "list"
+            },
+            "target_dataset": {
+                "type": "str"
+            },
+            "recursive": {
+                "type": "bool"
+            },
+            "exclude": {
+                "type": "list"
+            },
+            "properties": {
+                "type": "bool"
+            },
+            "properties_exclude": {
+                "type": "list"
+            },
+            "replicate": {
+                "type": "bool"
+            },
+            "encryption": {
+                "type": "bool"
+            },
+            "encryption_key": {
+                "type": "str"
+            },
+            "encryption_key_format": {
+                "type": "str",
+                "choices": [
+                    "HEX",
+                    "PASSPHRASE"
+                ]
+            },
+            "encryption_key_location": {
+                "type": "str"
+            },
+            "periodic_snapshot_tasks": {
+                "type": "list"
+            },
+            "naming_schema": {
+                "type": "list"
+            },
+            "also_include_naming_schema": {
+                "type": "list"
+            },
+            "auto": {
+                "type": "bool"
+            },
+            "schedule": {
+                "type": "dict",
+                "suboptions": {
+                    "minute": {
+                        "type": "str"
+                    },
+                    "hour": {
+                        "type": "str"
+                    },
+                    "dom": {
+                        "type": "str"
+                    },
+                    "month": {
+                        "type": "str"
+                    },
+                    "dow": {
+                        "type": "str"
+                    },
+                    "begin": {
+                        "type": "str"
+                    },
+                    "end": {
+                        "type": "str"
+                    }
+                }
+            },
+            "restrict_schedule": {
+                "type": "dict",
+                "suboptions": {
+                    "minute": {
+                        "type": "str"
+                    },
+                    "hour": {
+                        "type": "str"
+                    },
+                    "dom": {
+                        "type": "str"
+                    },
+                    "month": {
+                        "type": "str"
+                    },
+                    "dow": {
+                        "type": "str"
+                    },
+                    "begin": {
+                        "type": "str"
+                    },
+                    "end": {
+                        "type": "str"
+                    }
+                }
+            },
+            "only_matching_schedule": {
+                "type": "bool"
+            },
+            "allow_from_scratch": {
+                "type": "bool"
+            },
+            "readonly": {
+                "type": "str",
+                "choices": [
+                    "SET",
+                    "REQUIRE",
+                    "IGNORE"
+                ]
+            },
+            "hold_pending_snapshots": {
+                "type": "bool"
+            },
+            "retention_policy": {
+                "type": "str",
+                "choices": [
+                    "SOURCE",
+                    "CUSTOM",
+                    "NONE"
+                ]
+            },
+            "lifetime_value": {
+                "type": "int"
+            },
+            "lifetime_unit": {
+                "type": "str",
+                "choices": [
+                    "HOUR",
+                    "DAY",
+                    "WEEK",
+                    "MONTH",
+                    "YEAR"
+                ]
+            },
+            "compression": {
+                "type": "str",
+                "choices": [
+                    "LZ4",
+                    "PIGZ",
+                    "PLZIP"
+                ]
+            },
+            "speed_limit": {
+                "type": "int"
+            },
+            "large_block": {
+                "type": "bool"
+            },
+            "embed": {
+                "type": "bool"
+            },
+            "compressed": {
+                "type": "bool"
+            },
+            "retries": {
+                "type": "int"
+            },
+            "logging_level": {
+                "type": "str",
+                "choices": [
+                    "DEBUG",
+                    "INFO",
+                    "WARNING",
+                    "ERROR"
+                ]
+            },
+            "enabled": {
+                "type": "bool"
+            }
+        }
+    },
     "sharing_nfs_create_0": {
         "type": "dict",
         "options": {

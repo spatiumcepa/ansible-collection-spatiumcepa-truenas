@@ -36,64 +36,27 @@ options:
     type: dict
     description: ''
     options:
-      attributes:
-        description: ''
-        suboptions: {}
-        type: dict
-      email:
+      address:
         description: ''
         type: str
-      full_name:
+      burst:
         description: ''
-        type: str
-      group:
+        type: bool
+      force:
+        description: ''
+        type: bool
+      iburst:
+        description: ''
+        type: bool
+      maxpoll:
         description: ''
         type: int
-      groups:
-        description: ''
-        type: list
-      home:
-        description: ''
-        type: str
-      home_mode:
-        description: ''
-        type: str
-      locked:
-        description: ''
-        type: bool
-      microsoft_account:
-        description: ''
-        type: bool
-      password:
-        description: ''
-        type: str
-      password_disabled:
-        description: ''
-        type: bool
-      shell:
-        description: ''
-        type: str
-      smb:
-        description: ''
-        type: bool
-      sshpubkey:
-        description: ''
-        type: str
-      sudo:
-        description: ''
-        type: bool
-      sudo_commands:
-        description: ''
-        type: list
-      sudo_nopasswd:
-        description: ''
-        type: bool
-      uid:
+      minpoll:
         description: ''
         type: int
-      username:
+      prefer:
         description: ''
-        type: str
+        type: bool
 """
 
 EXAMPLES = """
@@ -116,7 +79,7 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasSystemNtpserver.RESOURCE_API_MODEL],
+            model=API_ARG_SPECS[TruenasSystemNtpserver.RESOURCE_API_MODEL_SPEC],
             state={'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'}
         ),
         supports_check_mode=True,

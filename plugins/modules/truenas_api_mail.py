@@ -89,7 +89,7 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasMail.RESOURCE_API_MODEL]
+            model=API_ARG_SPECS[TruenasMail.RESOURCE_API_MODEL_SPEC]
         ),
         supports_check_mode=True,
     )

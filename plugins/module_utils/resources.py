@@ -8,11 +8,12 @@ import json
 
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPMethod, HTTPResponse, \
     TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS
 
 
 class TruenasResource(object):
 
-    RESOURCE_API_MODEL = 'RESOURCE_API_MODEL_NOT_SET'
+    RESOURCE_API_MODEL_SPEC = 'RESOURCE_API_MODEL_NOT_SET'
     _RESOURCE_PATH = None
     _RESOURCE_ITEM_PATH = None
     RESOURCE_ITEM_ID_FIELD = 'id'
@@ -25,6 +26,10 @@ class TruenasResource(object):
         self.resource_changed = False
         self.resource_created = False
         self.resource_deleted = False
+
+    def _item_url_path(self, id):
+        # implementations can redefine if ID value needs massaging
+        return str(self._RESOURCE_ITEM_PATH.format(id=str(id)))
 
     def _send_request(self, http_method, url_path, body_params=None, path_params=None, query_params=None):
         response = self._conn.send_request(
@@ -95,7 +100,7 @@ class TruenasResource(object):
             HTTPResponse.BODY: None,
         }
 
-        read_response = self.read()
+        read_response = self._find_item_request(model)
         item_list = read_response[HTTPResponse.BODY]
         for item in item_list:
             item_hash = self._find_item_hash(item)
@@ -110,6 +115,12 @@ class TruenasResource(object):
                 response[HTTPResponse.STATUS_CODE] = HTTPCode.OK
                 response[HTTPResponse.BODY] = item
                 break
+        return response
+
+    def _find_item_request(self, item):
+        # implementations can redefine how to get an item list
+        # such as if the resource URL supports list query options
+        response = self.read()
         return response
 
     def _find_item_hash(self, item):
@@ -145,16 +156,24 @@ class TruenasResource(object):
             self.resource_created = response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
             return response
 
+        # remove model fields not found in update model
+        model_keys = model.keys()
+        update_model = model.copy()
+        update_model_keys = API_ARG_SPECS[self.RESOURCE_API_MODEL_UPDATE]['options'].keys()
+        for model_key in model_keys:
+            if model_key not in update_model_keys:
+                discard = update_model.pop(model_key)
+
         # update found item
         found_item = find_item_response[HTTPResponse.BODY]
         found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
 
-        self.resource_changed = self._model_has_changes(found_item, model)
+        self.resource_changed = self._model_has_changes(found_item, update_model)
         # if model does not have changes, respond with find repsonse and avoid submitting data with no delta
         if not self.resource_changed:
             return find_item_response
 
-        return self._send_checked_request(found_item, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=found_item_id), model)
+        return self._send_checked_request(found_item, HTTPMethod.PUT, self._item_url_path(found_item_id), update_model)
 
     def delete_item(self, model):
         find_item_response = self.find_item(model)
@@ -163,11 +182,10 @@ class TruenasResource(object):
             return find_item_response
 
         # delete found item
-        # update found item
         found_item = find_item_response[HTTPResponse.BODY]
         found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
 
-        delete_response = self._send_checked_request({}, HTTPMethod.DELETE, str(self._RESOURCE_ITEM_PATH.format(id=found_item_id)))
+        delete_response = self._send_checked_request({}, HTTPMethod.DELETE, self._item_url_path(found_item_id))
         self.resource_changed = delete_response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
         self.resource_deleted = self.resource_changed
         return delete_response
@@ -175,7 +193,7 @@ class TruenasResource(object):
 
 class TruenasActivedirectory(TruenasResource):
 
-    RESOURCE_API_MODEL = 'activedirectory_update_0'
+    RESOURCE_API_MODEL_SPEC = 'activedirectory_update_0'
     _RESOURCE_PATH = '/activedirectory'
 
     def update(self, new_model):
@@ -210,7 +228,9 @@ class TruenasActivedirectory(TruenasResource):
 
 class TruenasAlertservice(TruenasResource):
 
-    RESOURCE_API_MODEL = 'alertservice_update_1'
+    RESOURCE_API_MODEL_SPEC = 'alertservice_create_0'
+    RESOURCE_API_MODEL_CREATE = 'alertservice_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'alertservice_update_1'
     _RESOURCE_PATH = '/alertservice'
     _RESOURCE_ITEM_PATH = '/alertservice/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
@@ -218,7 +238,9 @@ class TruenasAlertservice(TruenasResource):
 
 class TruenasCronjob(TruenasResource):
 
-    RESOURCE_API_MODEL = 'cronjob_update_1'
+    RESOURCE_API_MODEL_SPEC = 'cronjob_create_0'
+    RESOURCE_API_MODEL_CREATE = 'cronjob_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'cronjob_update_1'
     _RESOURCE_PATH = '/cronjob'
     _RESOURCE_ITEM_PATH = '/cronjob/id/{id}'
     RESOURCE_SEARCH_FIELD = 'description'
@@ -226,7 +248,9 @@ class TruenasCronjob(TruenasResource):
 
 class TruenasGroup(TruenasResource):
 
-    RESOURCE_API_MODEL = 'group_update_1'
+    RESOURCE_API_MODEL_SPEC = 'group_create_0'
+    RESOURCE_API_MODEL_CREATE = 'group_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'group_update_1'
     _RESOURCE_PATH = '/group'
     _RESOURCE_ITEM_PATH = '/group/id/{id}'
     RESOURCE_SEARCH_FIELD = 'gid'
@@ -251,7 +275,9 @@ class TruenasGroup(TruenasResource):
 
 class TruenasIdmap(TruenasResource):
 
-    RESOURCE_API_MODEL = 'idmap_update_1'
+    RESOURCE_API_MODEL_SPEC = 'idmap_create_0'
+    RESOURCE_API_MODEL_CREATE = 'idmap_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'idmap_update_1'
     _RESOURCE_PATH = '/idmap'
     _RESOURCE_ITEM_PATH = '/idmap/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
@@ -259,7 +285,9 @@ class TruenasIdmap(TruenasResource):
 
 class TruenasInterface(TruenasResource):
 
-    RESOURCE_API_MODEL = 'interface_update_1'
+    RESOURCE_API_MODEL_SPEC = 'interface_create_0'
+    RESOURCE_API_MODEL_CREATE = 'interface_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'interface_update_1'
     _RESOURCE_PATH = '/interface'
     _RESOURCE_ITEM_PATH = '/interface/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
@@ -267,22 +295,27 @@ class TruenasInterface(TruenasResource):
 
 class TruenasMail(TruenasResource):
 
-    RESOURCE_API_MODEL = 'mail_update_0'
+    RESOURCE_API_MODEL_SPEC = 'mail_update_0'
     _RESOURCE_PATH = '/mail'
 
 
 class TruenasNetworkConfiguration(TruenasResource):
 
-    RESOURCE_API_MODEL = 'network_configuration_update_0'
+    RESOURCE_API_MODEL_SPEC = 'network_configuration_update_0'
     _RESOURCE_PATH = '/network/configuration'
 
 
 class TruenasPoolDataset(TruenasResource):
 
-    RESOURCE_API_MODEL = 'pool_dataset_create_0'
+    RESOURCE_API_MODEL_SPEC = 'pool_dataset_create_0'
+    RESOURCE_API_MODEL_CREATE = 'pool_dataset_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'pool_dataset_update_1'
     _RESOURCE_PATH = '/pool/dataset'
     _RESOURCE_ITEM_PATH = '/pool/dataset/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
+
+    def _item_url_path(self, id):
+        return str(self._RESOURCE_ITEM_PATH.format(id=id.replace('/', '%2F')))
 
     def _model_has_changes(self, existing_model, new_model):
         has_changes = False
@@ -312,60 +345,39 @@ class TruenasPoolDataset(TruenasResource):
 
         return has_changes
 
-    def update_item(self, model):
-        find_item_response = self._send_request(HTTPMethod.GET, self._RESOURCE_PATH + "?name=" + model["name"])
-        # URL query by name responses with a list of matches, check it actually returned one
-        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND or len(find_item_response[HTTPResponse.BODY]) == 0:
-            # not found, route to create
-            response = self.create(model)
-            self.resource_created = response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
-            return response
-
-        # remove name from update model, it is read only
-        update_model = model.copy()
-        hasno = update_model.pop("name")
-
-        # update found item
-        # URL query by name responses with a list of matches, use the first match
-        found_item = find_item_response[HTTPResponse.BODY][0]
-        found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
-
-        self.resource_changed = self._model_has_changes(found_item, update_model)
-        # if model does not have changes, respond with find repsonse and avoid submitting data with no delta
-        if not self.resource_changed:
-            return find_item_response
-
-        return self._send_checked_request(found_item, HTTPMethod.PUT, self._RESOURCE_ITEM_PATH.format(id=found_item_id.replace('/', '%2F')), update_model)
-
-    def delete_item(self, model):
-        find_item_response = self._send_request(HTTPMethod.GET, self._RESOURCE_PATH + "?name=" + model["name"])
-        # URL query by name responses with a list of matches, check it actually returned one
-        # if it could not be found, it doesn't need deleted
-        if find_item_response[HTTPResponse.STATUS_CODE] == HTTPCode.NOT_FOUND or len(find_item_response[HTTPResponse.BODY]) == 0:
-            return find_item_response
-
-        # delete found item
-        # URL query by name responses with a list of matches, use the first match
-        found_item = find_item_response[HTTPResponse.BODY][0]
-        found_item_id = found_item[self.RESOURCE_ITEM_ID_FIELD]
-
-        delete_response = self._send_checked_request({}, HTTPMethod.DELETE, self._RESOURCE_ITEM_PATH.format(id=found_item_id.replace('/', '%2F')))
-        self.resource_changed = delete_response[HTTPResponse.STATUS_CODE] == HTTPCode.OK
-        self.resource_deleted = self.resource_changed
-        return delete_response
+    def _find_item_request(self, item):
+        # query for dataset by name
+        response = self._send_request(HTTPMethod.GET, self._RESOURCE_PATH + "?name=" + item["name"])
+        return response
 
 
 class TruenasPoolSnapshottask(TruenasResource):
 
-    RESOURCE_API_MODEL = 'pool_snapshottask_update_1'
+    RESOURCE_API_MODEL_SPEC = 'pool_snapshottask_create_0'
+    RESOURCE_API_MODEL_CREATE = 'pool_snapshottask_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'pool_snapshottask_update_1'
     _RESOURCE_PATH = '/pool/snapshottask'
     _RESOURCE_ITEM_PATH = '/pool/snapshottask/id/{id}'
     RESOURCE_SEARCH_FIELD = 'dataset'
 
+    def _find_item_hash(self, item):
+        # match pool snapshottask by dataset + naming_schema
+        if self.RESOURCE_SEARCH_FIELD not in item.keys():
+            raise TruenasModelError(
+                "find item candidate does not contain RESOURCE_SEARCH_FIELD %s" % (self.RESOURCE_SEARCH_FIELD)
+            )
+        search_field_value = json.dumps(item[self.RESOURCE_SEARCH_FIELD])
+        search_naming_schema_value = json.dumps(item['naming_schema'])
+        search_key = "{}_{}".format(search_field_value, search_naming_schema_value)
+        search_key_encoded = search_key.encode()
+        search_hash = hashlib.sha1(search_key_encoded)
+        search_hexadecimal = search_hash.hexdigest()
+        return search_hexadecimal
+
 
 class TruenasService(TruenasResource):
 
-    RESOURCE_API_MODEL = None
+    RESOURCE_API_MODEL_SPEC = None
     _RESOURCE_PATH = '/service'
     _RESOURCE_ITEM_PATH = '/service/id/{id}'
     RESOURCE_SEARCH_FIELD = 'service'
@@ -452,7 +464,9 @@ class TruenasService(TruenasResource):
 
 class TruenasSharingNfs(TruenasResource):
 
-    RESOURCE_API_MODEL = 'sharing_nfs_update_1'
+    RESOURCE_API_MODEL_SPEC = 'sharing_nfs_create_0'
+    RESOURCE_API_MODEL_CREATE = 'sharing_nfs_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'sharing_nfs_update_1'
     _RESOURCE_PATH = '/sharing/nfs'
     _RESOURCE_ITEM_PATH = '/sharing/nfs/id/{id}'
     RESOURCE_SEARCH_FIELD = 'comment'
@@ -474,7 +488,9 @@ class TruenasSharingNfs(TruenasResource):
 
 class TruenasSharingSmb(TruenasResource):
 
-    RESOURCE_API_MODEL = 'sharing_smb_update_1'
+    RESOURCE_API_MODEL_SPEC = 'sharing_smb_create_0'
+    RESOURCE_API_MODEL_CREATE = 'sharing_smb_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'sharing_smb_update_1'
     _RESOURCE_PATH = '/sharing/smb'
     _RESOURCE_ITEM_PATH = '/sharing/smb/id/{id}'
     RESOURCE_SEARCH_FIELD = 'name'
@@ -482,19 +498,21 @@ class TruenasSharingSmb(TruenasResource):
 
 class TruenasSystemAdvanced(TruenasResource):
 
-    RESOURCE_API_MODEL = 'system_advanced_update_0'
+    RESOURCE_API_MODEL_SPEC = 'system_advanced_update_0'
     _RESOURCE_PATH = '/system/advanced'
 
 
 class TruenasSystemGeneral(TruenasResource):
 
-    RESOURCE_API_MODEL = 'system_general_update_0'
+    RESOURCE_API_MODEL_SPEC = 'system_general_update_0'
     _RESOURCE_PATH = '/system/general'
 
 
 class TruenasSystemNtpserver(TruenasResource):
 
-    RESOURCE_API_MODEL = 'system_ntpserver_update_1'
+    RESOURCE_API_MODEL_SPEC = 'system_ntpserver_create_0'
+    RESOURCE_API_MODEL_CREATE = 'system_ntpserver_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'system_ntpserver_update_1'
     _RESOURCE_PATH = '/system/ntpserver'
     _RESOURCE_ITEM_PATH = '/system/ntpserver/id/{id}'
     RESOURCE_SEARCH_FIELD = 'address'
@@ -502,7 +520,7 @@ class TruenasSystemNtpserver(TruenasResource):
 
 class TruenasSystemReboot(TruenasResource):
 
-    RESOURCE_API_MODEL = 'system_reboot_0'
+    RESOURCE_API_MODEL_SPEC = 'system_reboot_0'
     _RESOURCE_PATH = '/system/reboot'
 
     def reboot(self, model):
@@ -513,7 +531,7 @@ class TruenasSystemReboot(TruenasResource):
 
 class TruenasSystemState(TruenasResource):
 
-    RESOURCE_API_MODEL = 'json_string'
+    RESOURCE_API_MODEL_SPEC = 'json_string'
     _RESOURCE_PATH = '/system/state'
 
     def __init__(self, conn, check_mode=False):
@@ -525,7 +543,7 @@ class TruenasSystemState(TruenasResource):
 
 class TruenasUpdate(TruenasResource):
 
-    RESOURCE_API_MODEL = 'update_update_0'
+    RESOURCE_API_MODEL_SPEC = 'update_update_0'
     _RESOURCE_PATH = '/update'
 
     def __init__(self, conn, check_mode=False):
@@ -564,7 +582,9 @@ class TruenasUpdate(TruenasResource):
 
 class TruenasUser(TruenasResource):
 
-    RESOURCE_API_MODEL = 'user_create_0'
+    RESOURCE_API_MODEL_SPEC = 'user_create_0'
+    RESOURCE_API_MODEL_CREATE = 'user_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'user_update_1'
     _RESOURCE_PATH = '/user'
     _RESOURCE_ITEM_PATH = '/user/id/{id}'
     RESOURCE_SEARCH_FIELD = 'username'
@@ -585,9 +605,3 @@ class TruenasUser(TruenasResource):
             elif existing_model[new_key] != new_model[new_key]:
                 has_changes = True
         return has_changes
-
-    def update_item(self, model):
-        # group_create is in #/components/schemas/user_create_0 but not in #/components/schemas/user_update_1
-        update_model = model
-        popped = update_model.pop("group_create", None)
-        return TruenasResource.update_item(self, update_model)

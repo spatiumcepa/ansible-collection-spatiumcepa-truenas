@@ -85,6 +85,13 @@ options:
       options:
         description: ''
         type: str
+      type:
+        choices:
+        - BRIDGE
+        - LINK_AGGREGATION
+        - VLAN
+        description: ''
+        type: str
       vlan_parent_interface:
         description: ''
         type: str
@@ -118,7 +125,7 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasInterface.RESOURCE_API_MODEL],
+            model=API_ARG_SPECS[TruenasInterface.RESOURCE_API_MODEL_SPEC],
             #state={'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'}
         ),
         supports_check_mode=True,

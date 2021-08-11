@@ -108,7 +108,7 @@ response:
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            model=API_ARG_SPECS[TruenasPoolSnapshottask.RESOURCE_API_MODEL],
+            model=API_ARG_SPECS[TruenasPoolSnapshottask.RESOURCE_API_MODEL_SPEC],
             state={'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'}
         ),
         supports_check_mode=True,

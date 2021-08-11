@@ -292,7 +292,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             # TODO: solve pool_dataset_create_0 vs pool_dataset_update_1 model arg spec conflicts
-            model=API_ARG_SPECS[TruenasPoolDataset.RESOURCE_API_MODEL],
+            model=API_ARG_SPECS[TruenasPoolDataset.RESOURCE_API_MODEL_SPEC],
             state={'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'}
         ),
         supports_check_mode=True,

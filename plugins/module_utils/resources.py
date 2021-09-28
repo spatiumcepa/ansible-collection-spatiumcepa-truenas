@@ -391,12 +391,12 @@ class TruenasReplication(TruenasResource):
                 raise TruenasModelError("Server did not return model field %s - check API schema arg spec for %s" % (new_key, self.RESOURCE_API_MODEL))
             elif existing_model[new_key] == {} and new_model[new_key] is None:
                 continue
-            elif new_key == "ssh_credentials":
+            elif new_key == "ssh_credentials" and not has_changes:
                 # PUT model group field is the ssh credential id integer
                 # but GET item model returns the resolved credential details
                 if "id" in existing_model["ssh_credentials"]:
                     has_changes = int(existing_model["ssh_credentials"]["id"]) != int(new_model["ssh_credentials"])
-            elif new_key == "periodic_snapshot_tasks":
+            elif new_key == "periodic_snapshot_tasks" and not has_changes:
                 # PUT model snapshot task is list of integer IDs
                 # but GET item model returns list of task models
                 if len(existing_model["periodic_snapshot_tasks"]) > 0:

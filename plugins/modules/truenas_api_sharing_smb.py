@@ -1,8 +1,8 @@
 from __future__ import absolute_import, division, print_function
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import HTTPCode, HTTPResponse, \
-    TruenasServerError, TruenasModelError, TruenasUnexpectedResponse
+    TruenasServerError, TruenasModelError, TruenasUnexpectedResponse, strip_null_module_params
 from ansible_collections.spatiumcepa.truenas.plugins.module_utils.resources import TruenasSharingSmb
-from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS, strip_null_module_params
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.arg_specs import API_ARG_SPECS
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.basic import AnsibleModule
 __metaclass__ = type

@@ -35,3 +35,9 @@ class TruenasServerError(Exception):
 class TruenasUnexpectedResponse(Exception):
     """Raise when TrueNAS does not respond as expected"""
     pass
+
+
+def strip_null_module_params(params):
+    if params is None:
+        raise TruenasModelError("Module params is null. Not expected.")
+    return {k: v for k, v in params.items() if v is not None}

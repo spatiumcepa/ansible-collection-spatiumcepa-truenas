@@ -73,6 +73,31 @@ Connection plugin doc list sample output
 spatiumcepa.truenas.api             TODO BBQ ...
 ```
 
+### TrueNAS API module arg spec generation
+
+The module arg spec object map is generated from the TrueNAS API v2.0 OpenAPI Spec 3.0 definition using `tools/generate_api_arg_specs.py`, a la
+
+```sh
+cd ~/src/ansible-collection-spatiumcepa-truenas
+cat <<EOF > plugins/module_utils/arg_specs.py
+from __future__ import absolute_import, division, print_function
+from ansible_collections.spatiumcepa.truenas.plugins.module_utils.common import TruenasModelError
+__metaclass__ = type
+
+# truenas_api_* module argument specs map
+# derived from TrueNAS API v2.0 OpenAPI Spec 3.0 definition
+# generated using tools/generate_api_arg_specs.py
+API_ARG_SPECS = $(python tools/generate_api_arg_specs.py < tools/TrueNAS-12.0-U5.1-API-v2.0.json | jq .)
+EOF
+```
+
+generate option documentation skeleton for module by limting API schema ID list to the desired option spec identifier
+
+```sh
+export API_SCHEMA_ID=rsynctask_create_0 # POST /rsynctask TrueNAS API OAS3 spec ID
+python tools/generate_api_arg_specs.py $API_SCHEMA_ID < tools/TrueNAS-12.0-U5.1-API-v2.0.json | python tools/generate_api_option_docs.py
+```
+
 ## Testing in coordination with playbook development
 
 To streamline development testing, symlink this collection into your playbook virtual environment collections directory, such as:
@@ -85,6 +110,7 @@ ln -s ~/src/ansible-collection-spatiumcepa-truenas truenas
 ## Testing with ansible-test
 
 To ansible-test the collection locally, it needs to be in an opinionated directory structure
+
 ```sh
 mkdir -p /tmp/ansible_collections/spatiumcepa
 rm -rf /tmp/ansible_collections/spatiumcepa/truenas

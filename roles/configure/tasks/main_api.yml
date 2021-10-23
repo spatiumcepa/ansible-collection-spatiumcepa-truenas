@@ -179,3 +179,12 @@
         - truenas_replication
   tags:
     - truenas_replication
+
+- name: Manage rsync tasks
+  include_tasks:
+    file: rsynctask.yml
+    apply:
+      tags:
+        - truenas_rsynctask
+  tags:
+    - truenas_rsynctask

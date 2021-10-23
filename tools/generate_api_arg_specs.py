@@ -29,6 +29,8 @@ schema_id_white_list = [
     "pool_snapshottask_update_1",
     "replication_create_0",
     "replication_update_1",
+    "rsynctask_create_0",
+    "rsynctask_update_1",
     "sharing_nfs_create_0",
     "sharing_nfs_update_1",
     "sharing_smb_create_0",

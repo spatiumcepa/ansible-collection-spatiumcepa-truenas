@@ -1,0 +1,10 @@
+---
+- name: Manage rsync task items
+  truenas_api_rsynctask:
+    model: "{{ rsynctask_item.model }}"
+    state: "{{ rsynctask_item.state | default(omit) }}"
+  register: truenas_api_result_rsynctask_item_update
+  with_items: "{{ truenas_config_rsynctask }}"
+  loop_control:
+    loop_var: rsynctask_item
+  when: truenas_config_rsynctask is defined

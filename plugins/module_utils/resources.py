@@ -411,6 +411,15 @@ class TruenasReplication(TruenasResource):
         return has_changes
 
 
+class TruenasRsynctask(TruenasResource):
+    RESOURCE_API_MODEL_SPEC = 'rsynctask_create_0'
+    RESOURCE_API_MODEL_CREATE = 'rsynctask_create_0'
+    RESOURCE_API_MODEL_UPDATE = 'rsynctask_update_1'
+    _RESOURCE_PATH = '/rsynctask'
+    _RESOURCE_ITEM_PATH = '/rsynctask/id/{id}'
+    RESOURCE_SEARCH_FIELD = 'desc'
+
+
 class TruenasService(TruenasResource):
 
     RESOURCE_API_MODEL_SPEC = None

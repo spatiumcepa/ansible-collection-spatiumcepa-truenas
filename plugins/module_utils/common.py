@@ -15,6 +15,9 @@ class HTTPCode:
 
 
 class HTTPResponse:
+    HTTP_METHOD = 'http_method'
+    URL = 'url'
+    REQUEST_BODY = 'request_body'
     STATUS_CODE = 'status_code'
     HEADERS = 'headers'
     BODY = 'body'

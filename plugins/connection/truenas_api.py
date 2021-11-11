@@ -196,6 +196,9 @@ class Connection(ConnectionBase):
             raise AnsibleConnectionFailure("Could not connect to {0}: {1}".format(url, e.reason)) from e
 
         response = {
+            HTTPResponse.HTTP_METHOD: http_method,
+            HTTPResponse.URL: url,
+            HTTPResponse.REQUEST_BODY: body_data,
             HTTPResponse.STATUS_CODE: response_status,
             HTTPResponse.HEADERS: response_headers,
             HTTPResponse.BODY: response_data,

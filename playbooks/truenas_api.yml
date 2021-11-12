@@ -38,3 +38,4 @@
         - truenas_sharing_nfs
         - truenas_sharing_smb
         - truenas_replication
+        - truenas_rsynctask

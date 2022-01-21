@@ -6,7 +6,7 @@ description: Spatium Cepa TrueNAS Management Ansible Collection
 readme: "README.md"
 authors:
   - Nicholas Kiraly (@nkiraly)
-dependencies: []
+dependencies: {}
 license:
   - "BSD-2-Clause"
 tags:
